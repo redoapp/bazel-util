@@ -3,6 +3,7 @@ load("@bazel_util//file:rules.bzl", "find_packages")
 
 find_packages(
     name = "packages",
+    excludes = {excludes},
     prefix = repository_name() + "//files",
     roots = [""],
     visibility = ["//visibility:public"],
@@ -13,9 +14,10 @@ find_packages(
 # https://github.com/bazelbuild/bazel/issues/16217 .
 def _files_impl(ctx):
     ignores = ctx.attr.ignores
+    excludes = ctx.attr.excludes
 
     ctx.file("WORKSPACE.bazel", executable = False)
-    content = _BUILD
+    content = _BUILD.format(excludes = repr(excludes))
     content += ctx.read(ctx.attr.build)
     ctx.file("BUILD.bazel", content = content, executable = False)
     path = ctx.path(ctx.attr.root_file).dirname
@@ -35,6 +37,10 @@ files = repository_rule(
     attrs = {
         "build": attr.label(
             allow_single_file = True,
+        ),
+        "excludes": attr.string_list(
+            default = [],
+            doc = "Directory names to exclude from traversal",
         ),
         "ignores": attr.string_list(),
         "root_file": attr.label(

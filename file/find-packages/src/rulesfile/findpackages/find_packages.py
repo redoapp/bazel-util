@@ -2,9 +2,10 @@ from pathlib import Path
 from os import walk
 
 
-def find_packages(root, roots, prefix):
+def find_packages(root, roots, prefix, excludes=None):
+    excludes = set(excludes or [])
     for root_dir in roots:
-        for package in sorted(_packages(root / root_dir), key=str):
+        for package in sorted(_packages(root / root_dir, excludes), key=str):
             package = package.relative_to(root)
             print(
                 prefix
@@ -20,7 +21,8 @@ def find_packages(root, roots, prefix):
 _build_names = {name.lower() for name in ("BUILD", "BUILD.bazel")}
 
 
-def _packages(root):
-    for dir_, _, files in walk(root):
+def _packages(root, excludes):
+    for dir_, subdirs, files in walk(root):
+        subdirs[:] = [d for d in subdirs if d not in excludes]
         if any(file.lower() in _build_names for file in files):
             yield Path(dir_)

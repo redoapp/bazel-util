@@ -9,4 +9,4 @@ if [ -z "${RUNFILES_DIR-}" ]; then
   fi
 fi
 
-"$RUNFILES_DIR"/%{find_packages} --prefix %{prefix} "$BUILD_WORKSPACE_DIRECTORY" %{roots}
+"$RUNFILES_DIR"/%{find_packages} --prefix %{prefix} %{excludes} "$BUILD_WORKSPACE_DIRECTORY" %{roots}
