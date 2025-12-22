@@ -161,6 +161,9 @@ http_archive(
     sha256 = "6c4affd5ae8fb4788de83bb33c02d198a9544a577b70614d084008b4426db106",
     strip_prefix = "rules_javascript-%s" % JAVASCRIPT_VERSION,
     url = "https://github.com/redoapp/rules_javascript/archive/%s.tar.gz" % JAVASCRIPT_VERSION,
+    repo_mapping = {
+        "@rules_file": "@"
+    }
 )
 
 load("@better_rules_javascript//rules:workspace.bzl", javascript_repositories = "repositories")
