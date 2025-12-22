@@ -12,10 +12,10 @@ def buildifier_repositories(version = "v8.0.3"):
 
 def buildifier_toolchains():
     native.register_toolchains(
-        "@rules_file//buildifier:macos_amd64_toolchain",
-        "@rules_file//buildifier:macos_arm64_toolchain",
-        "@rules_file//buildifier:linux_amd64_toolchain",
-        "@rules_file//buildifier:linux_arm64_toolchain",
-        "@rules_file//buildifier:windows_amd64_toolchain",
-        "@rules_file//buildifier:src_toolchain",
+        str(Label(":macos_amd64_toolchain")),
+        str(Label(":macos_arm64_toolchain")),
+        str(Label(":linux_amd64_toolchain")),
+        str(Label(":linux_arm64_toolchain")),
+        str(Label(":windows_amd64_toolchain")),
+        str(Label(":src_toolchain")),
     )

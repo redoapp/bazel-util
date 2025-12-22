@@ -1,3 +1,4 @@
+
 import %workspace%/tools/deleted_packages.bazelrc
 
 common --noenable_bzlmod

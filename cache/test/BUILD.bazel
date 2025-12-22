@@ -1,0 +1,26 @@
+load("//cache:rules.bzl", "cache_src")
+load("//util:rules.bzl", "digest")
+
+sh_binary(
+    name = "content",
+    srcs = ["content.sh"],
+)
+
+digest(
+    name = "digest",
+    srcs = ["example.txt"],
+    encoding = "hex",
+)
+
+cache_src(
+    name = "status",
+    content = ":content",
+    key = ":digest",
+    output = ".status",
+    store = ":store",
+)
+
+sh_binary(
+    name = "store",
+    srcs = ["store.sh"],
+)

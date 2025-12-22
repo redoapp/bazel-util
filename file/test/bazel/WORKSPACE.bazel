@@ -1,4 +1,4 @@
-workspace(name = "rules_file_test")
+workspace(name = "bazel_util_test")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -66,6 +66,6 @@ rules_pkg_dependencies()
 # Files
 
 local_repository(
-    name = "rules_file",
+    name = "bazel_util",
     path = "../../../../files/files",
 )

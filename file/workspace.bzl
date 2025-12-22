@@ -1,5 +1,5 @@
 _BUILD = """
-load("@rules_file//file:rules.bzl", "find_packages")
+load("@bazel_util//file:rules.bzl", "find_packages")
 
 find_packages(
     name = "packages",

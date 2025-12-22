@@ -1,4 +1,4 @@
-load("@rules_file//jsonschema:rules.bzl", "jsonschema_toolchain")
+load("@bazel_util//jsonschema:rules.bzl", "jsonschema_toolchain")
 
 package(default_visibility = ["//visibility:public"])
 

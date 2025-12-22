@@ -15,7 +15,7 @@ set -e
 
 if [ "${1-}" = check ]; then
     check_args="$(rlocation %{check_args})"
-    if [ ! -s "$check_args" ] || "$(rlocation rules_file/generate/run/bin)" check @"$check_args"; then
+    if [ ! -s "$check_args" ] || "$(rlocation bazel_util/generate/run/bin)" check @"$check_args"; then
       exit
     else
       code="$?"
@@ -30,4 +30,4 @@ fi
 
 write_args="$(rlocation %{write_args})"
 [ -s "$write_args" ] || exit 0
-exec "$(rlocation rules_file/generate/run/bin)" write --file-mode=%{file_mode} --dir-mode=%{dir_mode} @"$write_args"
+exec "$(rlocation bazel_util/generate/run/bin)" write --file-mode=%{file_mode} --dir-mode=%{dir_mode} @"$write_args"

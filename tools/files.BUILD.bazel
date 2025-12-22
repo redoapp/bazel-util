@@ -1,0 +1,48 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "black_files",
+    srcs = glob(
+        [
+            "files/**/*.py",
+        ],
+    ),
+)
+
+filegroup(
+    name = "buildifier_files",
+    srcs = glob(
+        [
+            "files/**/*.bazel",
+            "files/**/*.bzl",
+            "files/**/BUILD",
+            "files/**/WORKSPACE",
+        ],
+    ),
+)
+
+filegroup(
+    name = "common",
+    srcs = glob(
+        ["files/**/*"],
+        [
+            "**/docs/**",
+            "**/test/**",
+        ],
+    ),
+)
+
+filegroup(
+    name = "github_workflow_files",
+    srcs = glob(
+        [
+            "files/.github/workflows/*.yaml",
+            "files/.github/workflows/*.yml",
+        ],
+    ),
+)
+
+filegroup(
+    name = "prettier_files",
+    srcs = glob(["files/**/*.md"]),
+)

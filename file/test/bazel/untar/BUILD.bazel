@@ -1,4 +1,4 @@
-load("@rules_file//file:rules.bzl", "untar")
+load("@bazel_util//file:rules.bzl", "untar")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 pkg_tar(

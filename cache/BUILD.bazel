@@ -1,0 +1,4 @@
+exports_files(
+    ["digest-status-runner.sh.tpl"],
+    visibility = ["//visibility:public"],
+)

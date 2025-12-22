@@ -1,7 +1,19 @@
+load("@better_rules_javascript//prettier:rules.bzl", "configure_prettier")
+load("@better_rules_javascript//npm:rules.bzl", "yarn_resolve")
 load("//black:rules.bzl", "configure_black")
+load("//buildifier:rules.bzl", "buildifier")
 load("//file:rules.bzl", "bazelrc_deleted_packages", "find_packages")
 load("//generate:rules.bzl", "format", "generate", "generate_test", "multi_generate")
 load("//jsonschema:rules.bzl", "jsonschema_validator")
+
+bazelrc_deleted_packages(
+    name = "bazelrc",
+    output = "deleted_packages.bazelrc",
+    packages = [
+        ":test_packages",
+        "@files//:packages",
+    ],
+)
 
 configure_black(
     name = "black",
@@ -15,18 +27,8 @@ format(
     strip_prefix = "/files",
 )
 
-multi_generate(
-    name = "format",
-    deps = [
-        ":black_format",
-        ":buildifier_format",
-        ":github_workflow_validate",
-    ],
-)
-
-generate_test(
-    name = "format_test",
-    generate = ":format",
+buildifier(
+    name = "buildifier",
 )
 
 format(
@@ -34,6 +36,23 @@ format(
     srcs = ["@files//:buildifier_files"],
     formatter = "//buildifier",
     strip_prefix = "/files",
+)
+
+multi_generate(
+    name = "format",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":black_format",
+        ":buildifier_format",
+        ":github_workflow_validate",
+        # ":prettier_format", # TODO
+    ],
+)
+
+generate_test(
+    name = "format_test",
+    generate = ":format",
+    visibility = ["//visibility:public"],
 )
 
 jsonschema_validator(
@@ -48,18 +67,28 @@ format(
     strip_prefix = "/files",
 )
 
+configure_prettier(
+    name = "prettier",
+    config = "prettierrc.yml",
+    config_dep = "//:prettier_config",
+    dep = "@npm//prettier:lib",
+)
+
+format(
+    name = "prettier_format",
+    srcs = ["@files//:prettier_files"],
+    formatter = ":prettier",
+    strip_prefix = "/files",
+)
+
+yarn_resolve(
+    name = "resolve_npm",
+    output = "npm_data.bzl",
+)
+
 find_packages(
     name = "test_packages",
     roots = [
         "file/test/bazel",
-    ],
-)
-
-bazelrc_deleted_packages(
-    name = "bazelrc",
-    output = "deleted_packages.bazelrc",
-    packages = [
-        ":test_packages",
-        "@files//:packages",
     ],
 )

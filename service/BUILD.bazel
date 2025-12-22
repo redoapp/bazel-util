@@ -1,0 +1,4 @@
+exports_files(
+    ["services-runner.sh.tpl"],
+    visibility = ["//visibility:public"],
+)

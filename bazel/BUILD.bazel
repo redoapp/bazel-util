@@ -1,0 +1,17 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+
+bzl_library(
+    name = "bzl",
+    srcs = glob(["*.bzl"]),
+    visibility = ["//visibility:public"],
+)
+
+pkg_tar(
+    name = "tar",
+    srcs = [
+        "//bazel/mrun:pkg",
+        "//bazel/watchrun:pkg",
+    ],
+    visibility = ["//visibility:public"],
+)

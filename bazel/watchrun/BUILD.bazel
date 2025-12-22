@@ -1,0 +1,25 @@
+load("@rules_python//python:defs.bzl", "py_binary")
+load("//package:rules.bzl", "pkg_executable")
+
+py_binary(
+    name = "bin",
+    srcs = glob(["src/**/*.py"]),
+    data = ["//ibazel:bin"],
+    imports = ["src"],
+    legacy_create_init = False,
+    main = "src/rivetbazelutil/bazelwatchrun/__main__.py",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//bazel/client:py",
+        "//ibazel/notifications:py",
+        "//run/common:py",
+        "@rules_python//python/runfiles",
+    ],
+)
+
+pkg_executable(
+    name = "pkg",
+    bin = ":bin",
+    path = "watchrun",
+    visibility = ["//:__subpackages__"],
+)

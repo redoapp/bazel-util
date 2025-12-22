@@ -1,0 +1,6 @@
+{
+    "dependencies": {
+        "prettier": "~2.6.0"
+    },
+    "private": true
+}

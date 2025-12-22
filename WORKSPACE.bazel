@@ -1,8 +1,9 @@
-workspace(name = "rules_file")
+workspace(name = "bazel_util")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
-# Python
+# Rules Python
+
 RULES_PYTHON_VERSION = "1.4.1"
 
 http_archive(
@@ -21,41 +22,6 @@ python_register_toolchains(
     python_version = "3.11",
 )
 
-# Go
-
-http_archive(
-    name = "io_bazel_rules_go",
-    sha256 = "16e9fca53ed6bd4ff4ad76facc9b7b651a89db1689a2877d6fd7b82aa824e366",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.34.0/rules_go-v0.34.0.zip",
-        "https://github.com/bazelbuild/rules_go/releases/download/v0.34.0/rules_go-v0.34.0.zip",
-    ],
-)
-
-http_archive(
-    name = "bazel_gazelle",
-    sha256 = "501deb3d5695ab658e82f6f6f549ba681ea3ca2a5fb7911154b5aa45596183fa",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.26.0/bazel-gazelle-v0.26.0.tar.gz",
-        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.26.0/bazel-gazelle-v0.26.0.tar.gz",
-    ],
-)
-
-load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
-
-go_rules_dependencies()
-
-go_register_toolchains(version = "1.18.3")
-
-load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
-# load("//:reps.bzl", "go_repositories")
-
-# gazelle:repository go_repository name=org_golang_x_xerrors importpath=golang.org/x/xerrors
-# gazelle:repository_macro reps.bzl%go_repositories
-# go_repositories()
-
-gazelle_dependencies(go_repository_default_config = "//:WORKSPACE.bazel")
-
 # Java
 
 http_archive(
@@ -72,7 +38,71 @@ load("@bazel_features//:deps.bzl", "bazel_features_deps")
 
 bazel_features_deps()
 
+# Skylib
+
+SKYLIB_VERSION = "16de038c484145363340eeaf0e97a0c9889a931b"
+
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "96e0cd3f731f0caef9e9919aa119ecc6dace36b149c2f47e40aa50587790402b",
+    strip_prefix = "bazel-skylib-%s" % SKYLIB_VERSION,
+    urls = ["https://github.com/bazelbuild/bazel-skylib/archive/%s.tar.gz" % SKYLIB_VERSION],
+)
+
+# Pkg
+
+RULES_PKG_VERSION = "e7a1ba187c96df78d83f1adb0eac1b7db24f96bc"
+
+http_archive(
+    name = "rules_pkg",
+    sha256 = "468b63f58ebee5287ce6ae0762e3b2893508924f5badb0f3ab73382ead6bdf94",
+    strip_prefix = "rules_pkg-%s" % RULES_PKG_VERSION,
+    url = "https://github.com/bazelbuild/rules_pkg/archive/%s.tar.gz" % RULES_PKG_VERSION,
+)
+
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+
+rules_pkg_dependencies()
+
+# Rules Go
+
+http_archive(
+    name = "io_bazel_rules_go",
+    sha256 = "16e9fca53ed6bd4ff4ad76facc9b7b651a89db1689a2877d6fd7b82aa824e366",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.34.0/rules_go-v0.34.0.zip",
+        "https://github.com/bazelbuild/rules_go/releases/download/v0.34.0/rules_go-v0.34.0.zip",
+    ],
+)
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+
+go_rules_dependencies()
+
+go_register_toolchains(version = "1.18.3")
+
+# Gazelle
+
+http_archive(
+    name = "bazel_gazelle",
+    sha256 = "501deb3d5695ab658e82f6f6f549ba681ea3ca2a5fb7911154b5aa45596183fa",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.26.0/bazel-gazelle-v0.26.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.26.0/bazel-gazelle-v0.26.0.tar.gz",
+    ],
+)
+
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+# load("//:reps.bzl", "go_repositories")
+
+# gazelle:repository go_repository name=org_golang_x_xerrors importpath=golang.org/x/xerrors
+# gazelle:repository_macro reps.bzl%go_repositories
+# go_repositories()
+
+gazelle_dependencies(go_repository_default_config = "//:WORKSPACE.bazel")
+
 # Protobuf
+
 http_archive(
     name = "com_google_protobuf",
     sha256 = "9b4ee22c250fe31b16f1a24d61467e40780a3fbb9b91c3b65be2a376ed913a1a",
@@ -84,15 +114,72 @@ load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
 
-# Rivet Bazel Util
+# Rules Proto gRPC
 
-RIVET_BAZEL_UTIL_VERSION = "f0c1bbe0935c3994e4c1ea4b3370a47d8df9819e"
+PROTO_GRPC_VERSION = "2.0.0"
 
 http_archive(
-    name = "rivet_bazel_util",
-    sha256 = "fca24b50c6544c0c2146bca6de7b00558c276020e64692b770361d650ed97b6e",
-    strip_prefix = "rivet-bazel-util-%s" % RIVET_BAZEL_UTIL_VERSION,
-    url = "https://github.com/rivethealth/rivet-bazel-util/archive/%s.tar.gz" % RIVET_BAZEL_UTIL_VERSION,
+    name = "rules_proto_grpc",
+    sha256 = "d771584bbff98698e7cb3cb31c132ee206a972569f4dc8b65acbdd934d156b33",
+    strip_prefix = "rules_proto_grpc-%s" % PROTO_GRPC_VERSION,
+    urls = ["https://github.com/rules-proto-grpc/rules_proto_grpc/archive/%s.tar.gz" % PROTO_GRPC_VERSION],
+)
+
+load("@rules_proto_grpc//:repositories.bzl", "rules_proto_grpc_repos", "rules_proto_grpc_toolchains")
+
+rules_proto_grpc_toolchains()
+
+rules_proto_grpc_repos()
+
+# File (old)
+
+RULES_FILE_VERSION = "91265992ffbdc44748763bb765b88b98d466b3fa"
+
+http_archive(
+    name = "rules_file",
+    sha256 = "12680251fb30918524a9a951d4b62f26009e1d4dc27e83f136512e684dfc1f2c",
+    strip_prefix = "rules_file-%s" % RULES_FILE_VERSION,
+    url = "https://github.com/redoapp/rules_file/archive/%s.zip" % RULES_FILE_VERSION,
+)
+
+# File
+
+load("//rules:init.bzl", "file_init")
+
+file_init()
+
+load("//rules:workspace.bzl", "file_repositories")
+
+file_repositories()
+
+# JavaScript
+
+JAVASCRIPT_VERSION = "1601e401446b5f954b47fb26babcaf2608db7274"
+
+http_archive(
+    name = "better_rules_javascript",
+    sha256 = "6c4affd5ae8fb4788de83bb33c02d198a9544a577b70614d084008b4426db106",
+    strip_prefix = "rules_javascript-%s" % JAVASCRIPT_VERSION,
+    url = "https://github.com/redoapp/rules_javascript/archive/%s.tar.gz" % JAVASCRIPT_VERSION,
+)
+
+load("@better_rules_javascript//rules:workspace.bzl", javascript_repositories = "repositories")
+
+javascript_repositories()
+
+load("@better_rules_javascript//commonjs:workspace.bzl", "cjs_directory_npm_plugin")
+load("@better_rules_javascript//typescript:workspace.bzl", "ts_directory_npm_plugin")
+load("@better_rules_javascript//npm:workspace.bzl", "npm")
+load("//tools:npm_data.bzl", "PACKAGES", "ROOTS")
+
+npm(
+    "npm",
+    PACKAGES,
+    ROOTS,
+    [
+        cjs_directory_npm_plugin(),
+        ts_directory_npm_plugin(),
+    ],
 )
 
 # Buildifier
@@ -103,13 +190,13 @@ buildifier_repositories()
 
 buildifier_toolchains()
 
-# Format
+# Files
 
 load("//file:workspace.bzl", "files")
 
 files(
     name = "files",
-    build = "@rules_file//:files.bazel",
+    build = "//tools:files.BUILD.bazel",
     root_file = "//:WORKSPACE.bazel",
 )
 
@@ -128,6 +215,14 @@ load("//git:workspace.bzl", "git_repositories")
 git_repositories(
     root_file = "//:WORKSPACE.bazel",
 )
+
+# iBazel
+
+load("//ibazel:workspace.bzl", "ibazel_repositories", "ibazel_toolchains")
+
+ibazel_repositories()
+
+ibazel_toolchains()
 
 # jsonschema
 

@@ -1,0 +1,11 @@
+load("//util:rules.bzl", "digest_binary")
+
+sh_binary(
+    name = "bin",
+    srcs = ["bin.sh"],
+)
+
+digest_binary(
+    name = "digest_bin",
+    executable = ":bin",
+)

@@ -1,7 +1,7 @@
 load("@rules_python//python:defs.bzl", "py_binary")
 load("//generate:providers.bzl", "FormatterInfo")
 
-def configure_black(name, dep = "@rules_file_pip_black//:pkg", options = [], visibility = None):
+def configure_black(name, dep = "@bazel_util_pip_black//:pkg", options = [], visibility = None):
     black(
         name = name,
         bin = ":%s.bin" % name,
@@ -11,11 +11,11 @@ def configure_black(name, dep = "@rules_file_pip_black//:pkg", options = [], vis
 
     py_binary(
         name = "%s.bin" % name,
-        srcs = ["@rules_file//black/format:src"],
+        srcs = ["@bazel_util//black/format:src"],
         main = "black/format/src/__main__.py",
         deps = [
-            "@rivet_bazel_util//python/worker:py",
-            "@rules_file_pip_setproctitle//:pkg",
+            "@bazel_util//python/worker:py",
+            "@bazel_util_pip_setproctitle//:pkg",
             dep,
         ],
         visibility = ["//visibility:private"],
