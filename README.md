@@ -1,16 +1,34 @@
 # Bazel Util
 
-Bazel utilities
+Bazel utilities.
 
-## Overview
+- [Install](#Install)
+-
+
+## Install
+
+```
+# Bazel Util
+
+BAZEL_UTIL_VERSION = "..." # commit
+
+http_archive(
+    name = "bazel_util",
+    # sha256 = "...", # digest
+    strip_prefix = "rivet-bazel-util-%s" % BAZEL_UTIL_VERSION,
+    url = "https://github.com/redoapp/bazel-util/archive/%s.tar.gz" % BAZEL_UTIL_VERSION,
+)
+```
+
+## Running
 
 - **bazel-mrun:** Build and run multiple targets in parallel.
 - **bazel-watchrun:** Build and run multiple targets, restarting them after
   changes.
 
-## Install
+### Install
 
-### Bazel repositority
+#### Bazel repositority
 
 Add this project as a Bazel repository to the workspace:
 
@@ -18,38 +36,27 @@ Add this project as a Bazel repository to the workspace:
 <summary>WORKSPACE.bazel</summary>
 
 ```bzl
-# Rivet Bazel Util
-
-RIVET_BAZEL_UTIL_VERSION = "..." # commit
-
-http_archive(
-    name = "rivet_bazel_util",
-    # sha256 = "...", # digest
-    strip_prefix = "rivet-bazel-util-%s" % RIVET_BAZEL_UTIL_VERSION,
-    url = "https://github.com/rivethealth/rivet-bazel-util/archive/%s.tar.gz" % RIVET_BAZEL_UTIL_VERSION,
-)
-
-load("@rivet_bazel_util//ibazel:workspace.bzl", "ibazel_repositories", "ibazel_toolchains")
+load("@bazel_util//ibazel:workspace.bzl", "ibazel_repositories", "ibazel_toolchains")
 
 ibazel_repositories()
 
 ibazel_toolchains()
 ```
 
-The `@rivet_bazel_util//ibazel:toolchain_type` toolchain will download a
-pre-build executable of ibazel, if it exists. Otherwise, it will rely on
-`@bazel-watcher` repo to build from source.
+The `@bazel_util//ibazel:toolchain_type` toolchain will download a pre-build
+executable of ibazel, if it exists. Otherwise, it will rely on `@bazel-watcher`
+repo to build from source.
 
 </details>
 
 The targets can be invoked:
 
 ```sh
-bazel run @rivet_bazel_util//mrun:bin -- target1 target2
-bazel run @rivet_bazel_util//watchrun:bin -- target1 target2
+bazel run @bazel_util//mrun:bin -- target1 target2
+bazel run @bazel_util//watchrun:bin -- target1 target2
 ```
 
-### Linux
+#### Linux
 
 Or it can be installed natively, by building and installing a tarball.
 
@@ -71,9 +78,7 @@ chmod +x /usr/local/bin/bazel-watchrun
 </details>
 
 Note that bazel-watchrun relies on an aspect, and therefore still requires
-adding the rivet_bazel_util repository to the workspace.
-
-## Features
+adding the bazel_util repository to the workspace.
 
 ### bazel-mrun
 
@@ -179,16 +184,12 @@ changed browser sources.
 5. Prefix stdout and stderr with the target's name.
 </details>
 
-# rules_file
-
-Bazel rules for basic file operations, such as creating directories and formatting.
-
 ## Directory
 
 Create a directory from files:
 
 ```bzl
-load("@rules_file//file:rules.bzl", "directory")
+load("@bazel_util//file:rules.bzl", "directory")
 
 directory(
     name = "example",
@@ -199,7 +200,7 @@ directory(
 Create a directory from a tarball:
 
 ```bzl
-load("@rules_file//file:rules.bzl", "untar")
+load("@bazel_util//file:rules.bzl", "untar")
 
 untar(
     name = "example",
@@ -209,7 +210,8 @@ untar(
 
 ## Package-less Files
 
-Access files without regard to package structure. This can be helpful for formatting or Bazel integration tests.
+Access files without regard to package structure. This can be helpful for
+formatting or Bazel integration tests.
 
 ### Workspace Example
 
@@ -228,7 +230,7 @@ files(
 **BAZEL.bazel**
 
 ```
-load("@rules_file//file:rules.bzl", "bazelrc_deleted_packages")
+load("@bazel_util//file:rules.bzl", "bazelrc_deleted_packages")
 
 bazelrc_deleted_packages(
     name = "bazelrc",
@@ -271,7 +273,7 @@ Use files in the test directory as data for a Bazel integration test.
 **BAZEL.bazel**
 
 ```
-load("@rules_file//file:rules.bzl", "bazelrc_deleted_packages", "find_packages")
+load("@bazel_util//file:rules.bzl", "bazelrc_deleted_packages", "find_packages")
 
 filegroup(
     name = "test",
@@ -304,15 +306,17 @@ import %workspace%/deleted_packages.bazelrc
 
 ## Generate
 
-In some cases, it is necessary to version control build products in the workspace (bootstrapping, working with other tools).
+In some cases, it is necessary to version control build products in the
+workspace (bootstrapping, working with other tools).
 
-These rules build the outputs, and copy them to the workspace or check for differences.
+These rules build the outputs, and copy them to the workspace or check for
+differences.
 
 **BUILD.bazel**
 
 ```bzl
-load("@rules_file//file:rules.bzl", "bazelrc_deleted_packages")
-load("@rules_file//file:rules.bzl", "generate", "generate_test")
+load("@bazel_util//file:rules.bzl", "bazelrc_deleted_packages")
+load("@bazel_util//file:rules.bzl", "generate", "generate_test")
 
 genrule(
     name = "example",
@@ -355,16 +359,18 @@ bazel test :example_diff
 
 Formatting is a particular case of the checked-in build products pattern.
 
-The code formatting is a regular Bazel action. The formatted result can be using to overwrite workspace files, or to check for differences.
+The code formatting is a regular Bazel action. The formatted result can be using
+to overwrite workspace files, or to check for differences.
 
-This repository has rules for buildifier, black, and gofmt. It is also used for [prettier](https://github.com/rivethealth/rules_javascript).
+This repository has rules for buildifier, black, and gofmt. It is also used for
+[prettier](https://github.com/rivethealth/rules_javascript).
 
 ### Buildifier Example
 
 **WORKSPACE.bazel**
 
 ```bzl
-load("@rules_file//buildifier:workspace.bzl", "buildifier_repositories", "buildifier_toolchains")
+load("@bazel_util//buildifier:workspace.bzl", "buildifier_repositories", "buildifier_toolchains")
 
 buildifier_repositories()
 
@@ -377,19 +383,19 @@ files(
 )
 ```
 
-The `@rules_file//buildifier:toolchain_type` toolchain will download a
-pre-build executable of buildifier, if it exists. Otherwise, it will rely on the
+The `@bazel_util//buildifier:toolchain_type` toolchain will download a pre-build
+executable of buildifier, if it exists. Otherwise, it will rely on the
 `@com_github_bazelbuild_buildtools` repo to build from source.
 
 **BUILD.bazel**
 
 ```bzl
-load("@rules_file//generate:rules.bzl", "format", "generate_test")
+load("@bazel_util//generate:rules.bzl", "format", "generate_test")
 
 format(
     name = "buildifier_format",
     srcs = ["@files//:buildifier_files"],
-    formatter = "@rules_file//buildifier",
+    formatter = "@bazel_util//buildifier",
     strip_prefix = "files",
 )
 
