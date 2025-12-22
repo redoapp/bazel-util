@@ -1,26 +1,7 @@
-load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//javascript:rules.bzl", "js_library")
 
 package(default_visibility = ["//visibility:public"])
-
-# gazelle:proto disable
-# gazelle:prefix github.com/rivethealth
-
-gazelle(
-    name = "gazelle-fix",
-    command = "fix",
-)
-
-gazelle(
-    name = "gazelle-update",
-    args = [
-        "-from_file=go.mod",
-        "-to_macro=reps.bzl%go_repositories",
-        "-prune",
-    ],
-    command = "update-repos",
-)
 
 js_library(
     name = "prettier_config",
