@@ -1,0 +1,8 @@
+exports_files(
+    [
+        "ibazel-sock-activate-runner.sh.tpl",
+        "sock-activate-runner.sh.tpl",
+        "sock-activate-proxy-runner.sh.tpl",
+    ],
+    visibility = ["//visibility:public"],
+)

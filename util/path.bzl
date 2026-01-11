@@ -20,6 +20,16 @@ def output_name(label, file, strip_prefix = "", prefix = ""):
         path = "%s/%s" % (prefix, path) if path else prefix
     return path
 
+def path_resolve(label, path):
+    if path.startswith("/"):
+        return path[len("/"):]
+    return "/".join([part for part in [label.repo_name, label.package, path] if part])
+
+def package_path_resolve(label, path):
+    if path.startswith("/"):
+        return path[len("/"):]
+    return "/".join([part for part in [label.package, path] if part])
+
 def runfile_path(workspace, file):
     path = file.short_path
     if path.startswith("../"):

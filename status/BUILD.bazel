@@ -1,0 +1,16 @@
+load(":rules.bzl", "status")
+
+status(
+    name = "build_embed_label",
+    key = "BUILD_EMBED_LABEL",
+)
+
+config_setting(
+    name = "stamp",
+    values = {"stamp": "1"},
+)
+
+status(
+    name = "timestamp",
+    key = "TIMESTAMP",
+)
