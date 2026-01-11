@@ -8,17 +8,28 @@ def _ibazel_sock_activate_impl(ctx):
     bin_default = ctx.attr.bin[DefaultInfo]
     name = ctx.attr.name
     addrs = ctx.attr.addrs
+    ports = ctx.attr.ports
     server = ctx.executable._server
     server_default = ctx.attr._server[DefaultInfo]
     runner = ctx.file._runner
     workspace = ctx.workspace_name
+
+    # Build args from either addrs (quoted) or ports (with env var expansion)
+    if ports and addrs:
+        fail("Cannot specify both 'ports' and 'addrs'")
+    if ports:
+        args = " ".join(['--addr="tcp:${LISTEN_HOST:-localhost}:%s"' % port for port in ports])
+    elif addrs:
+        args = " ".join([shell.quote("--addr=%s" % addr) for addr in addrs])
+    else:
+        fail("Must specify either 'ports' or 'addrs'")
 
     executable = actions.declare_file(name)
     actions.expand_template(
         is_executable = True,
         output = executable,
         substitutions = {
-            "%{args}": " ".join([shell.quote("--addr=%s" % addr) for addr in addrs]),
+            "%{args}": args,
             "%{bin}": shell.quote(runfile_path(workspace, bin)),
             "%{sock_activate}": shell.quote(runfile_path(workspace, server)),
         },
@@ -35,14 +46,15 @@ def _ibazel_sock_activate_impl(ctx):
 
 ibazel_sock_activate = rule(
     attrs = {
-        "addrs": attr.string_list(mandatory = True),
+        "addrs": attr.string_list(default = []),
+        "ports": attr.int_list(default = []),
         "bin": attr.label(cfg = "target", executable = True, mandatory = True),
         "_bash_runfiles": attr.label(
             default = "@bazel_tools//tools/bash/runfiles",
         ),
         "_runner": attr.label(
             allow_single_file = True,
-            default = "ibazel-sock-activate-runner.sh.tpl",
+            default = "sock-activate-runner.sh.tpl",
         ),
         "_server": attr.label(
             cfg = "target",
@@ -61,17 +73,28 @@ def _sock_activate_impl(ctx):
     bin_default = ctx.attr.bin[DefaultInfo]
     name = ctx.attr.name
     addrs = ctx.attr.addrs
+    ports = ctx.attr.ports
     server = ctx.executable._server
     server_default = ctx.attr._server[DefaultInfo]
     runner = ctx.file._runner
     workspace = ctx.workspace_name
+
+    # Build args from either addrs (quoted) or ports (with env var expansion)
+    if ports and addrs:
+        fail("Cannot specify both 'ports' and 'addrs'")
+    if ports:
+        args = " ".join(['--addr="tcp:${LISTEN_HOST:-localhost}:%s"' % port for port in ports])
+    elif addrs:
+        args = " ".join([shell.quote("--addr=%s" % addr) for addr in addrs])
+    else:
+        fail("Must specify either 'ports' or 'addrs'")
 
     executable = actions.declare_file(name)
     actions.expand_template(
         is_executable = True,
         output = executable,
         substitutions = {
-            "%{args}": " ".join([shell.quote("--addr=%s" % addr) for addr in addrs]),
+            "%{args}": args,
             "%{bin}": shell.quote(runfile_path(workspace, bin)),
             "%{sock_activate}": shell.quote(runfile_path(workspace, server)),
         },
@@ -88,7 +111,8 @@ def _sock_activate_impl(ctx):
 
 sock_activate = rule(
     attrs = {
-        "addrs": attr.string_list(mandatory = True),
+        "addrs": attr.string_list(default = []),
+        "ports": attr.int_list(default = []),
         "bin": attr.label(cfg = "target", executable = True, mandatory = True),
         "_bash_runfiles": attr.label(
             default = "@bazel_tools//tools/bash/runfiles",
