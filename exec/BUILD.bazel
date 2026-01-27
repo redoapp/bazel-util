@@ -1,6 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 
 exports_files([
+    "command-runner.sh.tpl",
     "multibin.sh",
     "path-executable.bazel.tpl",
 ])
