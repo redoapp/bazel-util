@@ -58,7 +58,7 @@ ibazel_sock_activate = rule(
         ),
         "_server": attr.label(
             cfg = "target",
-            default = "//bazel/ibazel-sock-activate:bin",
+            default = "//net/ibazel-sock-activate:bin",
             executable = True,
         ),
     },
