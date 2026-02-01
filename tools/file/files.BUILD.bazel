@@ -26,8 +26,8 @@ filegroup(
     srcs = glob(
         ["files/**/*"],
         [
-            "**/docs/**",
-            "**/test/**",
+            "files/**/docs/**",
+            "files/**/test/**",
         ],
     ),
 )

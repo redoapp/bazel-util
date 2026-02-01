@@ -1,0 +1,17 @@
+jsonschema = use_extension("//jsonschema:extensions.bzl", "jsonschema")
+use_repo(
+    jsonschema,
+    "jsonschema_darwin_arm64",
+    "jsonschema_darwin_x86_64",
+    "jsonschema_linux_arm64",
+    "jsonschema_linux_x86_64",
+    "jsonschema_windows_x86_64",
+)
+
+register_toolchains(
+    "//jsonschema:linux_amd64_toolchain",
+    "//jsonschema:linux_arm64_toolchain",
+    "//jsonschema:macos_amd64_toolchain",
+    "//jsonschema:macos_arm64_toolchain",
+    "//jsonschema:windows_amd64_toolchain",
+)

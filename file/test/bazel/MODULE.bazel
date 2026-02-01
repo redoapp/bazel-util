@@ -1,0 +1,8 @@
+bazel_dep(name = "bazel_util")
+
+bazel_dep(name = "rules_pkg", version = "1.0.1")
+
+local_path_override(
+    module_name = "bazel_util",
+    path = "../../../../+file+files/files",
+)

@@ -16,7 +16,6 @@ def _files_impl(ctx):
     ignores = ctx.attr.ignores
     excludes = ctx.attr.excludes
 
-    ctx.file("WORKSPACE.bazel", executable = False)
     content = _BUILD.format(excludes = repr(excludes))
     content += ctx.read(ctx.attr.build)
     ctx.file("BUILD.bazel", content = content, executable = False)

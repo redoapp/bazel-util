@@ -383,10 +383,6 @@ files(
 )
 ```
 
-The `@bazel_util//buildifier:toolchain_type` toolchain will download a pre-build
-executable of buildifier, if it exists. Otherwise, it will rely on the
-`@com_github_bazelbuild_buildtools` repo to build from source.
-
 **BUILD.bazel**
 
 ```bzl

@@ -1,0 +1,15 @@
+load("//file:rules.bzl", "bazelrc_deleted_packages", "find_packages")
+
+bazelrc_deleted_packages(
+    name = "bazelrc",
+    output = "tests.bazelrc",
+    packages = [":test_packages"],
+    visibility = ["//visibility:public"],
+)
+
+find_packages(
+    name = "test_packages",
+    roots = [
+        "file/test/bazel",
+    ],
+)

@@ -1,0 +1,17 @@
+ibazel = use_extension("//ibazel:extensions.bzl", "ibazel")
+use_repo(
+    ibazel,
+    "ibazel_darwin_amd64",
+    "ibazel_darwin_arm64",
+    "ibazel_linux_amd64",
+    "ibazel_linux_arm64",
+    "ibazel_windows_amd64",
+)
+
+register_toolchains(
+    "//ibazel:linux_amd64_toolchain",
+    "//ibazel:linux_arm64_toolchain",
+    "//ibazel:macos_amd64_toolchain",
+    "//ibazel:macos_arm64_toolchain",
+    "//ibazel:windows_amd64_toolchain",
+)

@@ -1,18 +1,17 @@
-load("@better_rules_javascript//prettier:rules.bzl", "configure_prettier")
 load("@better_rules_javascript//npm:rules.bzl", "yarn_resolve")
+load("@better_rules_javascript//prettier:rules.bzl", "configure_prettier")
 load("//black:rules.bzl", "configure_black")
 load("//buildifier:rules.bzl", "buildifier")
-load("//file:rules.bzl", "bazelrc_deleted_packages", "find_packages")
 load("//generate:rules.bzl", "format", "generate", "generate_test", "multi_generate")
-load("//jsonschema:rules.bzl", "jsonschema_validator")
 
-bazelrc_deleted_packages(
+sh_binary(
     name = "bazelrc",
-    output = "deleted_packages.bazelrc",
-    packages = [
-        ":test_packages",
-        "@files//:packages",
+    srcs = ["bazelrc.sh"],
+    data = [
+        "//tools/test:bazelrc",
+        "@files//packages:bazelrc",
     ],
+    deps = ["@bazel_tools//tools/bash/runfiles"],
 )
 
 configure_black(
@@ -44,7 +43,7 @@ multi_generate(
     deps = [
         ":black_format",
         ":buildifier_format",
-        ":github_workflow_validate",
+        "//tools/github:github_workflow_validate",
         # ":prettier_format", # TODO
     ],
 )
@@ -53,18 +52,6 @@ generate_test(
     name = "format_test",
     generate = ":format",
     visibility = ["//visibility:public"],
-)
-
-jsonschema_validator(
-    name = "github_workflow_validator",
-    schema = "@schemastore_github_workflow//file",
-)
-
-format(
-    name = "github_workflow_validate",
-    srcs = ["@files//:github_workflow_files"],
-    formatter = ":github_workflow_validator",
-    strip_prefix = "/files",
 )
 
 configure_prettier(
@@ -84,11 +71,4 @@ format(
 yarn_resolve(
     name = "resolve_npm",
     output = "npm_data.bzl",
-)
-
-find_packages(
-    name = "test_packages",
-    roots = [
-        "file/test/bazel",
-    ],
 )
