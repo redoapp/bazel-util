@@ -1,0 +1,7 @@
+load("%{rules}", "ibazel_toolchain")
+
+ibazel_toolchain(
+    name = "toolchain",
+    ibazel = "ibazel",
+    visibility = ["//visibility:public"],
+)

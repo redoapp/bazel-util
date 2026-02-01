@@ -1,3 +1,1 @@
-import %workspace%/../../../../files/files/test.bazelrc
-
-common --repositories_without_autoloads=bazel_features_version,bazel_features_globals
+import %workspace%/../../../../+file+files/files/test.bazelrc

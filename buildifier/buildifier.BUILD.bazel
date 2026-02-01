@@ -1,0 +1,13 @@
+load("%{rules}", "buildifier_toolchain")
+load("%{sh_binary_rules}", "sh_binary")
+
+sh_binary(
+    name = "bin",
+    srcs = ["buildifier"],
+)
+
+buildifier_toolchain(
+    name = "toolchain",
+    buildifier = ":bin",
+    visibility = ["//visibility:public"],
+)

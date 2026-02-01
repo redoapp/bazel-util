@@ -1,8 +1,8 @@
 from os import chmod, makedirs, remove, stat, walk
 from os.path import dirname, join
+from python.runfiles import runfiles
 from shutil import copy, copytree, rmtree
 from stat import S_ISDIR
-from rules_python.python.runfiles import runfiles
 
 r = runfiles.Create()
 

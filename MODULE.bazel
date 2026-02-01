@@ -1,0 +1,47 @@
+module(name = "bazel_util")
+
+# Buildifier
+
+include("//buildifier:buildifier.MODULE.bazel")
+
+# Files
+
+include("//tools/file:file.MODULE.bazel")
+
+# Git
+
+include("//tools/git:git.MODULE.bazel")
+
+# GitHub
+
+include("//tools/github:github.MODULE.bazel")
+
+# Ibazel
+
+include("//ibazel:ibazel.MODULE.bazel")
+
+# Pkg
+
+bazel_dep(name = "rules_pkg", version = "1.0.1")
+
+# Platforms
+
+bazel_dep(name = "platforms", version = "1.0.0")
+
+# Python
+
+bazel_dep(name = "rules_python", version = "1.4.1")
+
+include("//tools/python:python.MODULE.bazel")
+
+# Shell
+
+bazel_dep(name = "rules_shell", version = "0.6.1")
+
+# Skylib
+
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+
+# JSON Schema
+
+include("//jsonschema:jsonschema.MODULE.bazel")

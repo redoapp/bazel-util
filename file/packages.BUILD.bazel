@@ -1,0 +1,15 @@
+load("%{rules}", "bazelrc_deleted_packages", "find_packages")
+
+find_packages(
+    name = "packages",
+    excludes = ["%{excludes}"],
+    prefix = repository_name() + "//files",
+    roots = [""],
+)
+
+bazelrc_deleted_packages(
+    name = "bazelrc",
+    output = "/%s" % "%{bazelrc}",
+    packages = [":packages"],
+    visibility = ["//visibility:public"],
+)

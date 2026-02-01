@@ -1,0 +1,17 @@
+buildifier = use_extension("//buildifier:extensions.bzl", "buildifier")
+use_repo(
+    buildifier,
+    "buildifier_darwin_amd64",
+    "buildifier_darwin_arm64",
+    "buildifier_linux_amd64",
+    "buildifier_linux_arm64",
+    "buildifier_windows_amd64",
+)
+
+register_toolchains(
+    "//buildifier:linux_amd64_toolchain",
+    "//buildifier:linux_arm64_toolchain",
+    "//buildifier:macos_amd64_toolchain",
+    "//buildifier:macos_arm64_toolchain",
+    "//buildifier:windows_amd64_toolchain",
+)

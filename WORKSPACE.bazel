@@ -1,89 +1,6 @@
 workspace(name = "bazel_util")
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
-
-# Rules Python
-
-RULES_PYTHON_VERSION = "1.4.1"
-
-http_archive(
-    name = "rules_python",
-    sha256 = "9f9f3b300a9264e4c77999312ce663be5dee9a56e361a1f6fe7ec60e1beef9a3",
-    strip_prefix = "rules_python-%s" % RULES_PYTHON_VERSION,
-    url = "https://github.com/bazelbuild/rules_python/archive/%s.tar.gz" % RULES_PYTHON_VERSION,
-)
-
-load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_toolchains")
-
-py_repositories()
-
-python_register_toolchains(
-    name = "python_3_11",
-    python_version = "3.11",
-)
-
-# Java
-
-http_archive(
-    name = "rules_java",
-    sha256 = "1558508fc6c348d7f99477bd21681e5746936f15f0436b5f4233e30832a590f9",
-    url = "https://github.com/bazelbuild/rules_java/releases/download/8.12.0/rules_java-8.12.0.tar.gz",
-)
-
-load("@rules_java//java:rules_java_deps.bzl", "rules_java_dependencies")
-
-rules_java_dependencies()
-
-load("@bazel_features//:deps.bzl", "bazel_features_deps")
-
-bazel_features_deps()
-
-# Skylib
-
-SKYLIB_VERSION = "16de038c484145363340eeaf0e97a0c9889a931b"
-
-http_archive(
-    name = "bazel_skylib",
-    sha256 = "96e0cd3f731f0caef9e9919aa119ecc6dace36b149c2f47e40aa50587790402b",
-    strip_prefix = "bazel-skylib-%s" % SKYLIB_VERSION,
-    urls = ["https://github.com/bazelbuild/bazel-skylib/archive/%s.tar.gz" % SKYLIB_VERSION],
-)
-
-# Pkg
-
-RULES_PKG_VERSION = "e7a1ba187c96df78d83f1adb0eac1b7db24f96bc"
-
-http_archive(
-    name = "rules_pkg",
-    sha256 = "468b63f58ebee5287ce6ae0762e3b2893508924f5badb0f3ab73382ead6bdf94",
-    strip_prefix = "rules_pkg-%s" % RULES_PKG_VERSION,
-    url = "https://github.com/bazelbuild/rules_pkg/archive/%s.tar.gz" % RULES_PKG_VERSION,
-)
-
-load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
-
-rules_pkg_dependencies()
-
-# File (old)
-
-RULES_FILE_VERSION = "91265992ffbdc44748763bb765b88b98d466b3fa"
-
-http_archive(
-    name = "rules_file",
-    sha256 = "12680251fb30918524a9a951d4b62f26009e1d4dc27e83f136512e684dfc1f2c",
-    strip_prefix = "rules_file-%s" % RULES_FILE_VERSION,
-    url = "https://github.com/redoapp/rules_file/archive/%s.zip" % RULES_FILE_VERSION,
-)
-
-# File
-
-load("//rules:init.bzl", "file_init")
-
-file_init()
-
-load("//rules:workspace.bzl", "file_repositories")
-
-file_repositories()
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 # JavaScript
 
@@ -91,88 +8,14 @@ JAVASCRIPT_VERSION = "1601e401446b5f954b47fb26babcaf2608db7274"
 
 http_archive(
     name = "better_rules_javascript",
+    repo_mapping = {
+        "@rules_file": "@",
+    },
     sha256 = "6c4affd5ae8fb4788de83bb33c02d198a9544a577b70614d084008b4426db106",
     strip_prefix = "rules_javascript-%s" % JAVASCRIPT_VERSION,
     url = "https://github.com/redoapp/rules_javascript/archive/%s.tar.gz" % JAVASCRIPT_VERSION,
-    repo_mapping = {
-        "@rules_file": "@"
-    }
 )
 
-load("@better_rules_javascript//rules:workspace.bzl", javascript_repositories = "repositories")
+load("//tools/javascript:workspace.bzl", "javascript_repositories")
 
 javascript_repositories()
-
-load("@better_rules_javascript//commonjs:workspace.bzl", "cjs_directory_npm_plugin")
-load("@better_rules_javascript//typescript:workspace.bzl", "ts_directory_npm_plugin")
-load("@better_rules_javascript//npm:workspace.bzl", "npm")
-load("//tools:npm_data.bzl", "PACKAGES", "ROOTS")
-
-npm(
-    "npm",
-    PACKAGES,
-    ROOTS,
-    [
-        cjs_directory_npm_plugin(),
-        ts_directory_npm_plugin(),
-    ],
-)
-
-# Buildifier
-
-load("//buildifier:workspace.bzl", "buildifier_repositories", "buildifier_toolchains")
-
-buildifier_repositories()
-
-buildifier_toolchains()
-
-# Files
-
-load("//file:workspace.bzl", "files")
-
-files(
-    name = "files",
-    build = "//tools:files.BUILD.bazel",
-    root_file = "//:WORKSPACE.bazel",
-)
-
-load("//rules:init.bzl", "file_init")
-
-file_init()
-
-load("//rules:workspace.bzl", "file_repositories")
-
-file_repositories()
-
-# Git
-
-load("//git:workspace.bzl", "git_repositories")
-
-git_repositories(
-    root_file = "//:WORKSPACE.bazel",
-)
-
-# iBazel
-
-load("//ibazel:workspace.bzl", "ibazel_repositories", "ibazel_toolchains")
-
-ibazel_repositories()
-
-ibazel_toolchains()
-
-# jsonschema
-
-load("//jsonschema:workspace.bzl", "jsonschema_repositories", "jsonschema_toolchains")
-
-jsonschema_repositories()
-
-jsonschema_toolchains()
-
-# GitHub
-
-http_file(
-    name = "schemastore_github_workflow",
-    downloaded_file_path = "schema.json",
-    sha256 = "bee899219962fcedc944bb321e2b79a5ca9ff8b7aee9136c4edfbb2aa1eb7a06",
-    url = "https://raw.githubusercontent.com/SchemaStore/schemastore/402fdd800ea211bd1b9bccb1abcda4a2ba20073c/src/schemas/json/github-workflow.json",
-)

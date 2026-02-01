@@ -1,7 +1,7 @@
 load("@rules_python//python:defs.bzl", "py_binary")
 load("//generate:providers.bzl", "FormatterInfo")
 
-def configure_black(name, dep = "@bazel_util_pip_black//:pkg", options = [], visibility = None):
+def configure_black(name, dep = Label("@pypi//black"), options = [], visibility = None):
     black(
         name = name,
         bin = ":%s.bin" % name,
@@ -15,7 +15,7 @@ def configure_black(name, dep = "@bazel_util_pip_black//:pkg", options = [], vis
         main = "black/format/src/__main__.py",
         deps = [
             "@bazel_util//python/worker:py",
-            "@bazel_util_pip_setproctitle//:pkg",
+            "@pypi//setproctitle",
             dep,
         ],
         visibility = ["//visibility:private"],
