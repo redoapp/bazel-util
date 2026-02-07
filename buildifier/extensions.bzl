@@ -11,6 +11,8 @@ _buildifier_toolchain = tag_class(
 
 _FACTS_KEY = "_"
 
+_FACTS_VERSION = "1"
+
 def _buildifier_impl(module_ctx):
     version = None
     for module in module_ctx.modules:
@@ -20,9 +22,12 @@ def _buildifier_impl(module_ctx):
     version = version or "8.2.1"
 
     facts = module_ctx.facts.get(_FACTS_KEY)
+    if facts and facts["_version"] != _FACTS_VERSION:
+        facts = None
 
-    sha256s = module_ctx.facts.get("sha256s")
-    if sha256s == None:
+    if facts != None:
+        sha256s = facts["sha256s"]
+    else:
         sha256s = {}
         module_ctx.download(
             output = "release.json",
@@ -42,7 +47,7 @@ def _buildifier_impl(module_ctx):
         )
 
     return module_ctx.extension_metadata(
-        facts = {_FACTS_KEY: {"sha256s": sha256s}},
+        facts = {_FACTS_KEY: {"sha256s": sha256s, "_version": _FACTS_VERSION}},
         reproducible = True,
     )
 

@@ -266,6 +266,7 @@
   "facts": {
     "//buildifier:extensions.bzl%buildifier": {
       "_": {
+        "_version": "1",
         "sha256s": {
           "buildifier-darwin-amd64": "9f8cffceb82f4e6722a32a021cbc9a5344b386b77b9f79ee095c61d087aaea06",
           "buildifier-darwin-arm64": "cfab310ae22379e69a3b1810b433c4cd2fc2c8f4a324586dfe4cc199943b8d5a",
