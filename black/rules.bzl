@@ -14,8 +14,8 @@ def configure_black(name, dep = Label("@pypi//black"), options = [], visibility 
         srcs = ["@bazel_util//black/format:src"],
         main = "black/format/src/__main__.py",
         deps = [
-            "@bazel_util//python/worker:py",
-            "@pypi//setproctitle",
+            Label("//python/worker:py"),
+            Label("@pypi//setproctitle"),
             dep,
         ],
         visibility = ["//visibility:private"],
