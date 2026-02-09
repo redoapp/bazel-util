@@ -2,7 +2,6 @@
 import %workspace%/tools/file/files.bazelrc
 import %workspace%/tools/test/tests.bazelrc
 
-common --enable_workspace
 common --noincompatible_disallow_empty_glob
 common --repositories_without_autoloads=bazel_features_version,bazel_features_globals
 

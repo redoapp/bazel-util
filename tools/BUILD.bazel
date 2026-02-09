@@ -1,5 +1,5 @@
-load("@better_rules_javascript//npm:rules.bzl", "yarn_resolve")
-load("@better_rules_javascript//prettier:rules.bzl", "configure_prettier")
+load("@rules_javascript//npm:rules.bzl", "yarn_resolve")
+load("@rules_javascript//prettier:rules.bzl", "configure_prettier")
 load("//black:rules.bzl", "configure_black")
 load("//buildifier:rules.bzl", "buildifier")
 load("//generate:rules.bzl", "format", "generate", "generate_test", "multi_generate")

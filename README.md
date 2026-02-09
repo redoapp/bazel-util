@@ -36,7 +36,7 @@ Add this project as a Bazel repository to the workspace:
 <summary>WORKSPACE.bazel</summary>
 
 ```bzl
-load("@bazel_util//ibazel:workspace.bzl", "ibazel_repositories", "ibazel_toolchains")
+load("@bazel_util//ibazel:repositories.bzl", "ibazel_repositories", "ibazel_toolchains")
 
 ibazel_repositories()
 
@@ -370,7 +370,7 @@ This repository has rules for buildifier, black, and gofmt. It is also used for
 **WORKSPACE.bazel**
 
 ```bzl
-load("@bazel_util//buildifier:workspace.bzl", "buildifier_repositories", "buildifier_toolchains")
+load("@bazel_util//buildifier:repositories.bzl", "buildifier_repositories", "buildifier_toolchains")
 
 buildifier_repositories()
 
