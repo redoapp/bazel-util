@@ -35,6 +35,10 @@ archive_override(
 
 include("//tools/javascript:javascript.MODULE.bazel")
 
+# JSON
+
+bazel_dep(name = "jq.bzl", version = "0.6.0")
+
 # Pkg
 
 bazel_dep(name = "rules_pkg", version = "1.2.0")
