@@ -1,4 +1,4 @@
-yarn = use_extension("@rules_javascript//npm:extensions.bzl", "yarn")
+yarn = use_extension("@rules_javascript//npm:extensions.bzl", "yarn", dev_dependency = True)
 yarn.workspace(
     name = "bazel_util_npm",
     data = "//tools/javascript:npm.json",

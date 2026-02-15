@@ -22,7 +22,7 @@ include("//ibazel:ibazel.MODULE.bazel")
 
 # JavaScript
 
-bazel_dep(name = "rules_javascript")
+bazel_dep(name = "rules_javascript", dev_dependency = True)
 
 RULES_JAVASCRIPT_VERSION = "dc853d3b5ca1bcfab6e51573e1beb8587676323c"
 

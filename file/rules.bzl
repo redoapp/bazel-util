@@ -90,33 +90,30 @@ paths_filter = rule(
 
 def _untar_impl(ctx):
     actions = ctx.actions
+    excludes = ctx.attr.excludes
     name = ctx.attr.name
     srcs = ([ctx.file.src] if ctx.attr.src else []) + ctx.files.srcs
     strip_components = ctx.attr.strip_components
+    untar = ctx.executable._untar
+    untar_default = ctx.attr._untar[DefaultInfo]
 
     dir = actions.declare_directory(name)
 
     args = actions.args()
-    args.add(dir.path)
-    args.add(str(strip_components))
+    if strip_components:
+        args.add("--strip-components=%s" % strip_components)
+    for exclude in excludes:
+        args.add("--exclude=%s" % exclude)
+    args.add("--")
+    args.add_all([dir], expand_directories = False)
     args.add_all(srcs)
-    actions.run_shell(
+    actions.run(
         arguments = [args],
-        # prevent "Ignoring unknown extended header keyword"
-        command = '''
-set -e
-dir="$1"
-shift
-stp_cpts="$1"
-shift
-mkdir -p "$dir"
-for f in "$@"; do
-  tar xf "$f" -C "$dir" --strip-components "$stp_cpts" 2> /dev/null
-done
-        '''.strip(),
+        executable = untar,
         execution_requirements = {"local": "1"},
         inputs = srcs,
         outputs = [dir],
+        tools = [untar_default.files_to_run],
     )
 
     default_info = DefaultInfo(files = depset([dir]))
@@ -125,14 +122,21 @@ done
 
 untar = rule(
     attrs = {
+        "excludes": attr.string_list(
+            doc = "Exclude patterns",
+        ),
         "src": attr.label(
             allow_single_file = True,
-            doc = "Deprecated: use srcs instead",
         ),
         "srcs": attr.label_list(
             allow_files = True,
         ),
         "strip_components": attr.int(),
+        "_untar": attr.label(
+            cfg = "exec",
+            default = "//file/untar:bin",
+            executable = True,
+        ),
     },
     doc = "Create directory from tar archive",
     implementation = _untar_impl,

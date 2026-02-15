@@ -1,0 +1,7 @@
+load("@rules_shell_extra//shell:rules.bzl", "sh_binary")
+
+sh_binary(
+    name = "bin",
+    main = "bin.sh",
+    visibility = ["//visibility:public"],
+)

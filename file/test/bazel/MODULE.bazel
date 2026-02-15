@@ -1,8 +1,16 @@
 bazel_dep(name = "bazel_util")
-
-bazel_dep(name = "rules_pkg", version = "1.0.1")
+bazel_dep(name = "rules_pkg", version = "1.2.0")
 
 local_path_override(
     module_name = "bazel_util",
     path = "../../../../+file+files/files",
+)
+
+RULES_SHELL_EXTRA_VERSION = "93090b47f81577ba4890c770effd889f61ce5d19"
+
+archive_override(
+    module_name = "rules_shell_extra",
+    sha256 = "c69a83b7afefa03b21c370c2044c63c41800820f51680022604133a098e2c932",
+    strip_prefix = "rules_shell_extra-%s" % RULES_SHELL_EXTRA_VERSION,
+    url = "https://github.com/redoapp/rules_shell_extra/archive/%s.tar.gz" % RULES_SHELL_EXTRA_VERSION,
 )
