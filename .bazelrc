@@ -11,3 +11,5 @@ build --//generate:format_filter=@git_changed_files//:filter
 build:lint_all --//generate:format_filter=//file:all_filter
 
 test --test_output=streamed
+
+try-import %workspace%/.bazelrc.user

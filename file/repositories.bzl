@@ -24,7 +24,11 @@ def _files_impl(repository_ctx):
     ]
     if bazelignore:
         ignores += repository_ctx.read(repository_ctx.attr.bazelignore).splitlines()
-    repository_ctx.file(".bazelignore", "\n".join(["files/%s" % ignore for ignore in ignores]))
+    repository_ctx.file(".bazelignore", "\n".join([
+        "files/%s" % ignore.split("#", 1)[0].strip()
+        for ignore in ignores
+        if ignore.split("#", 1)[0].strip()
+    ]))
 
     repository_ctx.symlink(path, "files")
 

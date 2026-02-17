@@ -1,5 +1,6 @@
 .DS_Store
 .bazel-npm-cache.json
+.bazelrc.user
 .status
 .yarn
 bazel-*
