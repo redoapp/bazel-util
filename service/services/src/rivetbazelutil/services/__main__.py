@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from json import load
 from os import execv
 from pathlib import Path
-from rules_python.python.runfiles import runfiles
+from python.runfiles import runfiles
 from sys import exit, stderr
 
 parser = ArgumentParser(prog="service")

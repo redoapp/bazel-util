@@ -12,7 +12,7 @@ import typing
 from rivetbazelutil.bazelclient import client
 from rivetbazelutil.common import run as run_
 from rivetbazelutil.ibazelnotifications import notifications
-from rules_python.python.runfiles import runfiles
+from python.runfiles import runfiles
 
 r = runfiles.Create()
 
@@ -96,10 +96,7 @@ def _ibazel(ibazel_args, bazel_args, targets):
     pipe_read, pipe_write = os.pipe()
 
     process = subprocess.Popen(
-        [
-            r.Rlocation("bazel_util/ibazel/bin"),
-            f"-profile_dev=/dev/fd/{pipe_write}",
-        ]
+        [r.Rlocation("bazel_util/ibazel/bin"), f"-profile_dev=/dev/fd/{pipe_write}"]
         + ibazel_args
         + [
             "build",
@@ -146,10 +143,7 @@ def run(
         starlark_expr = r"target.files_to_run.executable.path + '\t' + str('digest' in target.output_groups)"
         executables_output = client.cquery(
             " + ".join(targets),
-            options=[
-                "--output=starlark",
-                f"--starlark:expr={starlark_expr}",
-            ]
+            options=["--output=starlark", f"--starlark:expr={starlark_expr}"]
             + bazel_args,
         )
         executables = []

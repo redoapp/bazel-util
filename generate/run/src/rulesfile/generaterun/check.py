@@ -1,4 +1,4 @@
-from rules_python.python.runfiles import runfiles
+from python.runfiles import runfiles
 from shutil import copyfileobj
 from sys import exit, stdout
 
