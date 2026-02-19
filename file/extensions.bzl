@@ -6,6 +6,7 @@ file_tag = tag_class(
         "bazelrc": attr.string(mandatory = True),
         "build": attr.label(allow_single_file = True, mandatory = True),
         "excludes": attr.string_list(),
+        "ignore_directories": attr.string_list(),
         "name": attr.string(mandatory = True),
         "root_file": attr.label(allow_single_file = True, mandatory = True),
     },
@@ -20,6 +21,7 @@ def _file_impl(module_ctx):
                 bazelrc = info.bazelrc,
                 build = info.build,
                 excludes = info.excludes,
+                ignore_directories = info.ignore_directories,
                 root_file = info.root_file,
             )
 
