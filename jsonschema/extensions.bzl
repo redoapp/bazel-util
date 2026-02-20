@@ -36,6 +36,7 @@ def _jsonschema_impl(module_ctx):
         jsonschema_http_archive(
             name = "jsonschema_%s" % platform.replace("-", "_"),
             sha256 = sha256s["jsonschema-%s-%s.zip" % (version, platform)],
+            strip_prefix = "jsonschema-%s-%s" % (version, platform),
             url = "https://github.com/sourcemeta/jsonschema/releases/download/v%s/jsonschema-%s-%s.zip" % (version, version, platform),
         )
 
