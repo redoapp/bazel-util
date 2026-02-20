@@ -5,6 +5,7 @@ find_packages(
     excludes = ["%{excludes}"],
     prefix = repository_name() + "//files",
     roots = [""],
+    visibility = ["//visibility:public"],
 )
 
 bazelrc_deleted_packages(
