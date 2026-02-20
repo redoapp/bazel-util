@@ -74,7 +74,8 @@ def create_runner(args_bin, runfiles_fn, name, bash_runfiles, actions, bin, diff
 
     generated = [file_def.generated for file_def in file_defs.values() if file_def.generated]
 
-    runfiles = runfiles_fn(files = [check_args_file, write_args_file] + bash_runfiles + diffs + generated)
+    runfiles = runfiles_fn(files = [check_args_file, write_args_file] + diffs + generated)
+    runfiles = runfiles.merge(bash_runfiles)
     runfiles = runfiles.merge(diff_bin.default_runfiles)
 
     # It seems that Python executable requires data_runfiles.

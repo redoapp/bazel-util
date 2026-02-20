@@ -3,7 +3,7 @@ load("//util:path.bzl", "runfile_path")
 
 def _cache_src_impl(ctx):
     actions = ctx.actions
-    bash_runfiles = ctx.files._bash_runfiles
+    bash_runfiles_default = ctx.attr._bash_runfiles[DefaultInfo]
     content = ctx.executable.content
     content_default = ctx.attr.content[DefaultInfo]
     key = ctx.file.key
@@ -20,7 +20,6 @@ def _cache_src_impl(ctx):
     elif label.package:
         output = "%s/%s" % (label.package, output)
 
-    print(ctx.workspace_name)
     executable = actions.declare_file(name)
     actions.expand_template(
         is_executable = True,
@@ -35,7 +34,8 @@ def _cache_src_impl(ctx):
         template = runner,
     )
 
-    runfiles = ctx.runfiles(files = [key] + bash_runfiles)
+    runfiles = ctx.runfiles(files = [key])
+    runfiles = runfiles.merge(bash_runfiles_default.default_runfiles)
     runfiles = runfiles.merge(content_default.default_runfiles)
     runfiles = runfiles.merge(store_default.default_runfiles)
     default_info = DefaultInfo(executable = executable, runfiles = runfiles)

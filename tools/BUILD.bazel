@@ -1,17 +1,17 @@
 load("@rules_javascript//npm:rules.bzl", "yarn_resolve")
 load("@rules_javascript//prettier:rules.bzl", "configure_prettier")
+load("@rules_shell_extra//shell:rules.bzl", "sh_binary")
 load("//black:rules.bzl", "configure_black")
 load("//buildifier:rules.bzl", "buildifier")
 load("//generate:rules.bzl", "format", "generate", "generate_test", "multi_generate")
 
 sh_binary(
     name = "bazelrc",
-    srcs = ["bazelrc.sh"],
+    main = "bazelrc.sh",
     data = [
         "//tools/test:bazelrc",
         "@files//packages:bazelrc",
     ],
-    deps = ["@bazel_tools//tools/bash/runfiles"],
 )
 
 configure_black(

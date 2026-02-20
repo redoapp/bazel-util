@@ -7,7 +7,7 @@ load(":runner.bzl", "create_runner")
 def _format_impl(ctx):
     actions = ctx.actions
     args_default = ctx.attr._args[DefaultInfo]
-    bash_runfiles = ctx.files._bash_runfiles
+    bash_runfiles_default = ctx.attr._bash_runfiles[DefaultInfo]
     diff = ctx.attr._diff[DefaultInfo]
     dir_mode = ctx.attr.dir_mode
     file_mode = ctx.attr.file_mode
@@ -36,7 +36,7 @@ def _format_impl(ctx):
     default_info = create_runner(
         actions = actions,
         args_bin = args_default,
-        bash_runfiles = bash_runfiles,
+        bash_runfiles = bash_runfiles_default.default_runfiles,
         bin = bin,
         diff_bin = diff,
         dir_mode = dir_mode,
@@ -130,7 +130,7 @@ formatter_composite = rule(
 def _generate_impl(ctx):
     actions = ctx.actions
     args_default = ctx.attr._args[DefaultInfo]
-    bash_runfiles = ctx.files._bash_runfiles
+    bash_runfiles_default = ctx.attr._bash_runfiles[DefaultInfo]
     data = ctx.files.data
     data_prefix = (
         ctx.attr.data_prefix[len("/"):] if ctx.attr.data_prefix.startswith("/") else ctx.attr.data_prefix if not ctx.label.package else ctx.label.package if not ctx.attr.data_prefix else "%s/%s" % (ctx.label.package, ctx.attr.data_prefix)
@@ -165,7 +165,7 @@ def _generate_impl(ctx):
     default_info = create_runner(
         actions = actions,
         args_bin = args_default,
-        bash_runfiles = bash_runfiles,
+        bash_runfiles = bash_runfiles_default.default_runfiles,
         bin = bin,
         diff_bin = diff,
         dir_mode = dir_mode,
@@ -233,13 +233,13 @@ generate = rule(
 
 def _multi_generate_impl(ctx):
     actions = ctx.actions
-    bash_runfiles = ctx.files._bash_runfiles
+    bash_runfiles_default = ctx.attr._bash_runfiles[DefaultInfo]
     deps = [target[DefaultInfo] for target in ctx.attr.deps]
     name = ctx.attr.name
     runner = ctx.file._runner
     workspace_name = ctx.workspace_name
 
-    runfiles = ctx.runfiles(files = bash_runfiles)
+    runfiles = bash_runfiles_default.default_runfiles
     runfiles = runfiles.merge_all([dep.default_runfiles for dep in deps])
 
     bin = actions.declare_file(name)
@@ -281,7 +281,7 @@ multi_generate = rule(
 
 def _generate_test_impl(ctx):
     actions = ctx.actions
-    bash_runfiles = ctx.files._bash_runfiles
+    bash_runfiles_default = ctx.attr._bash_runfiles[DefaultInfo]
     generate_info = ctx.attr.generate[DefaultInfo]
     name = ctx.attr.name
     tester = ctx.file._tester
@@ -297,7 +297,7 @@ def _generate_test_impl(ctx):
         },
     )
 
-    runfiles = ctx.runfiles(files = bash_runfiles)
+    runfiles = bash_runfiles_default.default_runfiles
     runfiles = runfiles.merge(generate_info.default_runfiles)
 
     default_info = DefaultInfo(
