@@ -3,10 +3,20 @@ load("@rules_javascript//javascript:rules.bzl", "js_library")
 
 package(default_visibility = ["//visibility:public"])
 
+alias(
+    name = "lint",
+    actual = "//tools/lint",
+)
+
 js_library(
     name = "prettier_config",
     srcs = ["prettierrc.yml"],
     root = ":root",
+)
+
+alias(
+    name = "refresh",
+    actual = "//tools/bazel_:refresh",
 )
 
 cjs_root(

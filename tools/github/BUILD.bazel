@@ -1,15 +1,7 @@
 load("//jsonschema:rules.bzl", "jsonschema_validator")
-load("//generate:rules.bzl", "format")
 
 jsonschema_validator(
     name = "github_workflow_validator",
     schema = "@schemastore_github_workflow//file",
-)
-
-format(
-    name = "github_workflow_validate",
-    srcs = ["@files//:github_workflow_files"],
-    formatter = ":github_workflow_validator",
-    strip_prefix = "/files",
     visibility = ["//:__subpackages__"],
 )

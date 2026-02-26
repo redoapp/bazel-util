@@ -1,0 +1,46 @@
+load("@rules_javascript//npm:rules.bzl", "yarn_resolve")
+load("//generate:rules.bzl", "format", "generate", "generate_test", "multi_generate")
+
+format(
+    name = "black_format",
+    srcs = ["@files//:black_files"],
+    formatter = "//tools/black",
+    strip_prefix = "/files",
+)
+
+format(
+    name = "buildifier_format",
+    srcs = ["@files//:buildifier_files"],
+    formatter = "//buildifier",
+    strip_prefix = "/files",
+)
+
+format(
+    name = "github_workflow_validate",
+    srcs = ["@files//:github_workflow_files"],
+    formatter = "//tools/github:github_workflow_validator",
+    strip_prefix = "/files",
+)
+
+multi_generate(
+    name = "lint",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        ":black_format",
+        ":buildifier_format",
+        ":github_workflow_validate",
+        # ":prettier_format", # TODO
+    ],
+)
+
+generate_test(
+    name = "format_test",
+    generate = ":format",
+)
+
+format(
+    name = "prettier_format",
+    srcs = ["@files//:prettier_files"],
+    formatter = ":prettier",
+    strip_prefix = "/files",
+)
