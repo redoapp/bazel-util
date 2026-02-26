@@ -1,6 +1,6 @@
 def _http_gz_impl(ctx):
-    url = ctx.attr.url
     sha256 = ctx.attr.sha256
+    url = ctx.attr.url
 
     ctx.download(
         output = "file.gz",
@@ -10,6 +10,10 @@ def _http_gz_impl(ctx):
     ctx.template(
         "BUILD.bazel",
         Label(":http-gz.BUILD.bazel"),
+    )
+
+    return ctx.repo_metadata(
+        reproducible = True,
     )
 
 http_gz = repository_rule(

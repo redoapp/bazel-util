@@ -19,6 +19,10 @@ def _ibazel_http_impl(ctx):
         url = url,
     )
 
+    return ctx.repo_metadata(
+        reproducible = True,
+    )
+
 ibazel_http = repository_rule(
     attrs = {
         "sha256": attr.string(mandatory = True),

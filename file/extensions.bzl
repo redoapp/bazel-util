@@ -2,13 +2,25 @@ load(":repositories.bzl", "files")
 
 file_tag = tag_class(
     attrs = {
-        "bazelignore": attr.label(allow_single_file = True),
-        "bazelrc": attr.string(mandatory = True),
-        "build": attr.label(allow_single_file = True, mandatory = True),
-        "excludes": attr.string_list(),
-        "ignore_directories": attr.string_list(),
-        "name": attr.string(mandatory = True),
-        "root_file": attr.label(allow_single_file = True, mandatory = True),
+        "bazelignore": attr.label(
+            doc = "Bazelignore file.",
+        ),
+        "bazelrc": attr.string(
+            doc = "Bazelrc file.",
+            mandatory = True,
+        ),
+        "build": attr.label(
+            doc = "BUILD file.",
+            mandatory = True,
+        ),
+        "ignore_directories": attr.string_list(
+            doc =
+                "Directory patterns to ignore. See ignore_directories() in REPO.bazel.",
+        ),
+        "name": attr.string(
+            doc = "Repository name.",
+            mandatory = True,
+        ),
     },
 )
 
@@ -20,9 +32,7 @@ def _file_impl(module_ctx):
                 bazelignore = info.bazelignore,
                 bazelrc = info.bazelrc,
                 build = info.build,
-                excludes = info.excludes,
                 ignore_directories = info.ignore_directories,
-                root_file = info.root_file,
             )
 
     return module_ctx.extension_metadata(

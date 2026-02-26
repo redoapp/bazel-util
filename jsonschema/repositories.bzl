@@ -1,11 +1,11 @@
-def _jsonschema_archive_impl(repository_ctx):
-    build = repository_ctx.attr._build
-    rules = repository_ctx.attr._rules
-    sha256 = repository_ctx.attr.sha256
-    strip_prefix = repository_ctx.attr.strip_prefix
-    url = repository_ctx.attr.url
+def _jsonschema_archive_impl(ctx):
+    build = ctx.attr._build
+    rules = ctx.attr._rules
+    sha256 = ctx.attr.sha256
+    strip_prefix = ctx.attr.strip_prefix
+    url = ctx.attr.url
 
-    repository_ctx.template(
+    ctx.template(
         "BUILD.bazel",
         build,
         substitutions = {
@@ -13,13 +13,13 @@ def _jsonschema_archive_impl(repository_ctx):
         },
     )
 
-    result = repository_ctx.download_and_extract(
+    result = ctx.download_and_extract(
         sha256 = sha256,
         stripPrefix = strip_prefix,
         url = url,
     )
 
-    return repository_ctx.repo_metadata(
+    return ctx.repo_metadata(
         reproducible = True,
     )
 

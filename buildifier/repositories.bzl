@@ -21,6 +21,10 @@ def _buildifier_http_impl(ctx):
         url = url,
     )
 
+    return ctx.repo_metadata(
+        reproducible = True,
+    )
+
 buildifier_http = repository_rule(
     attrs = {
         "sha256": attr.string(mandatory = True),

@@ -180,7 +180,7 @@ unzip = rule(
 
 def _find_packages_impl(ctx):
     actions = ctx.actions
-    excludes = ctx.attr.excludes
+    exclude_directories = ctx.attr.exclude_directories
     find_packages = ctx.executable._find_packages
     find_packages_default = ctx.attr._find_packages[DefaultInfo]
     name = ctx.attr.name
@@ -194,9 +194,12 @@ def _find_packages_impl(ctx):
         output = executable,
         substitutions = {
             "%{find_packages}": runfile_path(workspace, find_packages),
-            "%{roots}": " ".join([shell.quote(root) for root in roots]),
+            "%{exclude_directory_options}": " ".join([
+                "--exclude-directory=%s" % shell.quote(pattern)
+                for pattern in exclude_directories
+            ]),
             "%{prefix}": shell.quote(prefix),
-            "%{excludes}": " ".join(["--exclude %s" % shell.quote(e) for e in excludes]),
+            "%{roots}": " ".join([shell.quote(root) for root in roots]),
         },
         template = runner,
     )
@@ -211,12 +214,11 @@ def _find_packages_impl(ctx):
 
 find_packages = rule(
     attrs = {
-        "excludes": attr.string_list(
-            default = [],
-            doc = "Directory names to exclude from traversal",
+        "exclude_directories": attr.string_list(
+            doc = "Directory patterns to exclude.",
         ),
         "prefix": attr.string(),
-        "roots": attr.string_list(),
+        "roots": attr.string_list(default = [""]),
         "_find_packages": attr.label(
             cfg = "target",
             default = "//file/find-packages:bin",

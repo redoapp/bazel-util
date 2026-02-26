@@ -49,7 +49,7 @@ bazel_dep(name = "platforms", version = "1.0.0")
 
 # Python
 
-bazel_dep(name = "rules_python", version = "1.7.0")
+bazel_dep(name = "rules_python", version = "1.8.5")
 
 include("//tools/python:python.MODULE.bazel")
 

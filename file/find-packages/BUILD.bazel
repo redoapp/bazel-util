@@ -7,4 +7,5 @@ py_binary(
     srcs = glob(["src/**/*.py"]),
     imports = ["src"],
     main = "src/rulesfile/findpackages/__main__.py",
+    python_version = "3.13",
 )
