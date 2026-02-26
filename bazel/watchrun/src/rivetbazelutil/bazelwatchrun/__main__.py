@@ -39,16 +39,8 @@ parser.add_argument(
     metavar="IBAZEL_ARG",
     help="ibazel argument",
 )
-parser.add_argument(
-    "--width",
-    type=int,
-)
-parser.add_argument(
-    "targets",
-    nargs="*",
-    help="Targets to run",
-    metavar="target",
-)
+parser.add_argument("--width", type=int)
+parser.add_argument("targets", nargs="*", help="Targets to run", metavar="target")
 
 args = parser.parse_args()
 

@@ -32,21 +32,9 @@ parser.add_argument(
     metavar="BAZEL_ARG",
     help="bazel argument",
 )
-parser.add_argument(
-    "--parallelism",
-    type=int,
-    help="maximum concurrent processes",
-)
-parser.add_argument(
-    "--width",
-    type=int,
-)
-parser.add_argument(
-    "targets",
-    nargs="*",
-    help="Targets to run",
-    metavar="target",
-)
+parser.add_argument("--parallelism", type=int, help="maximum concurrent processes")
+parser.add_argument("--width", type=int)
+parser.add_argument("targets", nargs="*", help="Targets to run", metavar="target")
 
 args = parser.parse_args()
 

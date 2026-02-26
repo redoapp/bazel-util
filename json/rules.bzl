@@ -5,7 +5,7 @@ def _jq_impl(ctx):
     bin = ctx.actions.declare_file(name)
     ctx.actions.symlink(
         output = bin,
-        target_file = jq_toolchain.jqinfo.bin
+        target_file = jq_toolchain.jqinfo.bin,
     )
 
     default_info = DefaultInfo(executable = bin)
