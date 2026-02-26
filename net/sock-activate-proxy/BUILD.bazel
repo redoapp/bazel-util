@@ -6,6 +6,8 @@ py_binary(
     name = "bin",
     srcs = glob(["src/**/*.py"]),
     imports = ["src"],
+    legacy_create_init = False,
     main = "src/redotech/sockactivateproxy/__main__.py",
+    python_version = "3.13",
     deps = ["//net/sock-activate:bin"],
 )

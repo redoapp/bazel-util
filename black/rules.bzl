@@ -1,7 +1,12 @@
 load("@rules_python//python:defs.bzl", "py_binary")
 load("//generate:providers.bzl", "FormatterInfo")
 
-def configure_black(name, dep = Label("@pypi//black"), options = [], visibility = None):
+def configure_black(
+        name,
+        dep = Label("@pypi//black"),
+        options = [],
+        python_version = "3.13",
+        visibility = None):
     black(
         name = name,
         bin = ":%s.bin" % name,
@@ -18,6 +23,8 @@ def configure_black(name, dep = Label("@pypi//black"), options = [], visibility 
             Label("@pypi//setproctitle"),
             dep,
         ],
+        legacy_create_init = False,
+        python_version = python_version,
         visibility = ["//visibility:private"],
     )
 

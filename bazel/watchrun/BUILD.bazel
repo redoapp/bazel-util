@@ -8,6 +8,7 @@ py_binary(
     imports = ["src"],
     legacy_create_init = False,
     main = "src/rivetbazelutil/bazelwatchrun/__main__.py",
+    python_version = "3.13",
     visibility = ["//visibility:public"],
     deps = [
         "//bazel/client:py",

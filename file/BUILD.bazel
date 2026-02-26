@@ -1,5 +1,4 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
-load("@rules_python//python:defs.bzl", "py_binary")
 load(":rules.bzl", "all_filter")
 
 package(default_visibility = ["//visibility:public"])
@@ -17,9 +16,4 @@ all_filter(
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),
-)
-
-py_binary(
-    name = "directory",
-    srcs = ["directory.py"],
 )

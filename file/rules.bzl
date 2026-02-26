@@ -50,7 +50,7 @@ directory = rule(
     attrs = {
         "_directory": attr.label(
             cfg = "exec",
-            default = ":directory",
+            default = "//file/directory:bin",
             executable = True,
         ),
         "srcs": attr.label_list(
