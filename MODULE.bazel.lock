@@ -501,6 +501,23 @@
           "jsonschema_12.10.1_arm64.snap": "b8950b2050724f9c40a7ab359b31efe4b20a161d58074fd5be9e82337bfe22ce"
         }
       }
+    },
+    "@@rules_javascript+//nodejs:extensions.bzl%nodejs": {
+      "_": {
+        "_version": "1",
+        "sha256s": {
+          "node-v24.4.1-darwin-arm64.tar.xz": "7ea25548b120ebaeaffadd37878b83c3d917cbb1eb3e9dbab7cb861bd8763a56",
+          "node-v24.4.1-darwin-x64.tar.xz": "e391194c578cf91e2af35acb30dc6c23fe8893fb3409a2c9a4e25b51f87a6cb0",
+          "node-v24.4.1-headers.tar.xz": "5cc534bca66b184c837923ce5d9cc25ae7f3b3f6d8455ded509da0db041c16d7",
+          "node-v24.4.1-linux-arm64.tar.xz": "555659c36fc72d0617e278b5d26ffcaebc3760a3de354926b1e5f1b0bfd66083",
+          "node-v24.4.1-linux-ppc64le.tar.xz": "2d549d5c63d282012192bf8594ea105b9876e9198d3af8401c61efe15c3d8cb1",
+          "node-v24.4.1-linux-s390x.tar.xz": "70316824c88fa396b12363fb9695b8f9a88f671377056bd86761dc96962240f8",
+          "node-v24.4.1-linux-x64.tar.xz": "7e067b13cd0dc7ee8b239f4ebe1ae54f3bba3a6e904553fcb5f581530eb8306d",
+          "node-v24.4.1-win-arm64.zip": "8cb993d89d13119f582c77a4c734be5bdfeee5557e6cfe850ea1a2f23fa94686",
+          "node-v24.4.1-win-x64.zip": "0428a6ca7544df310de4ed12c10e84c0bc7c9022945dc16de22f7c0dc4893dd2"
+        },
+        "version": "24.4.1"
+      }
     }
   }
 }

@@ -29,7 +29,7 @@ multi_generate(
         ":black_format",
         ":buildifier_format",
         ":github_workflow_validate",
-        # ":prettier_format", # TODO
+        ":prettier_format",
     ],
 )
 
@@ -41,6 +41,6 @@ generate_test(
 format(
     name = "prettier_format",
     srcs = ["@files//:prettier_files"],
-    formatter = ":prettier",
+    formatter = "//tools/prettier",
     strip_prefix = "/files",
 )

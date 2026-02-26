@@ -24,11 +24,11 @@ include("//ibazel:ibazel.MODULE.bazel")
 
 bazel_dep(name = "rules_javascript", dev_dependency = True)
 
-RULES_JAVASCRIPT_VERSION = "dc853d3b5ca1bcfab6e51573e1beb8587676323c"
+RULES_JAVASCRIPT_VERSION = "40bf21d51264c67b8c8c02c4ec8a31bf2f4d4138"
 
 archive_override(
     module_name = "rules_javascript",
-    sha256 = "42147b63025b43c2cbb474b00e0cc8ebbd16600638f88a7416ea4828c972350e",
+    sha256 = "3552698824e7056281287822df3e11047069dfc902b7e1a5d505ec8b00cc27a9",
     strip_prefix = "rules_javascript-%s" % RULES_JAVASCRIPT_VERSION,
     url = "https://github.com/redoapp/rules_javascript/archive/%s.tar.gz" % RULES_JAVASCRIPT_VERSION,
 )
