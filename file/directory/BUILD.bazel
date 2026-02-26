@@ -5,6 +5,7 @@ py_binary(
     srcs = glob(["src/**/*.py"]),
     imports = ["src"],
     legacy_create_init = False,
+    main = "src/bazelutil/directory/__main__.py",
     python_version = "3.13",
     visibility = ["//visibility:public"],
 )
