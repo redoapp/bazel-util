@@ -1,7 +1,7 @@
 __package__ = "redotech.sockactivateproxy"
 
 from argparse import ArgumentParser
-from asyncio import Future, gather, get_event_loop, open_connection, sleep, start_server
+from asyncio import Future, gather, open_connection, run, sleep, start_server
 from contextlib import ExitStack
 from socket import AF_INET, AF_INET6, SOCK_STREAM
 from subprocess import Popen
@@ -72,20 +72,17 @@ async def run_server(
         server.close()
 
 
-try:
+async def main():
     with ExitStack() as stack:
-        loop = get_event_loop()
-        try:
-            loop.run_until_complete(
-                gather(
-                    *(
-                        run_server(stack, forward, listen, args.prog, args.args)
-                        for listen, forward in zip(args.listen, args.forward)
-                    )
-                )
+        await gather(
+            *(
+                run_server(stack, forward, listen, args.prog, args.args)
+                for listen, forward in zip(args.listen, args.forward)
             )
-        finally:
-            loop.run_until_complete(loop.shutdown_asyncgens())
-            loop.close()
+        )
+
+
+try:
+    run(main())
 except KeyboardInterrupt:
     exit(1)
