@@ -1,3 +1,5 @@
 *.lock linguist-generated
+npm.json linguist-generated
 
+/tools/bazel_/preset.bazelrc linguist-generated
 /tools/file/files.bazelrc linguist-generated

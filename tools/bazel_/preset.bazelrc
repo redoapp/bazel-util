@@ -1,0 +1,2 @@
+import %workspace%/bazelrc/preset.bazelrc
+import %workspace%/file/file.bazelrc

@@ -1,4 +1,5 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@bazel_util//bazelrc:rules.bzl", "bazelrc_group")
 load(":rules.bzl", "all_filter")
 
 package(default_visibility = ["//visibility:public"])
@@ -11,6 +12,11 @@ exports_files([
 
 all_filter(
     name = "all_filter",
+)
+
+bazelrc_group(
+    name = "bazelrc",
+    srcs = ["file.bazelrc"],
 )
 
 bzl_library(

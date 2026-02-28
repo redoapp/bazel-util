@@ -1,15 +1,19 @@
+# General
 
-import %workspace%/tools/file/files.bazelrc
-import %workspace%/tools/test/tests.bazelrc
-
+## Rules
 common --noincompatible_disallow_empty_glob
 common --repositories_without_autoloads=bazel_features_version,bazel_features_globals
 
-build --experimental_python_import_all_repositories=false
+## Test
+import %workspace%/tools/test/tests.bazelrc
 build --test_env=HOME
-build --//generate:format_filter=@git_changed_files//:filter
-build:lint_all --//generate:format_filter=//file:all_filter
-
 test --test_output=streamed
+
+# Rule set
+
+## Files
+import %workspace%/tools/file/files.bazelrc
+
+# Other
 
 try-import %workspace%/.bazelrc.user

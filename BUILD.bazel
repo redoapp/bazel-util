@@ -4,6 +4,11 @@ load("@rules_javascript//javascript:rules.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
 
 alias(
+    name = "bazelrc",
+    actual = "//tools/bazel_:preset_gen",
+)
+
+alias(
     name = "lint",
     actual = "//tools/lint",
 )

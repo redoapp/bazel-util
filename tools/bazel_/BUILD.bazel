@@ -1,4 +1,15 @@
 load("@rules_shell_extra//shell:rules.bzl", "sh_binary")
+load("//bazelrc:rules.bzl", "bazelrc_gen")
+
+bazelrc_gen(
+    name = "preset_gen",
+    path = "preset",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//bazelrc:preset",
+        "//file:bazelrc",
+    ],
+)
 
 sh_binary(
     name = "refresh",

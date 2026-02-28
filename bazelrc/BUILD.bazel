@@ -1,0 +1,8 @@
+load(":rules.bzl", "bazelrc_group")
+
+package(default_visibility = ["//visibility:public"])
+
+bazelrc_group(
+    name = "preset",
+    srcs = ["preset.bazelrc"],
+)
