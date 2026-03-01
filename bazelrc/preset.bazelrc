@@ -7,6 +7,7 @@ build -k
 build --guard_against_concurrent_changes
 build --incompatible_auto_exec_groups
 build --incompatible_strip_executable_safely
+build --experimental_output_paths strip
 
 ## Cache
 build --noexperimental_check_output_files
