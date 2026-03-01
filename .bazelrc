@@ -1,7 +1,11 @@
+import %workspace%/tools/bazel_/preset.bazelrc
+
 # General
 
 ## Rules
 common --noincompatible_disallow_empty_glob
+# C++
+common --noincompatible_no_rule_outputs_param
 common --repositories_without_autoloads=bazel_features_version,bazel_features_globals
 
 ## Test
@@ -9,7 +13,7 @@ import %workspace%/tools/test/tests.bazelrc
 build --test_env=HOME
 test --test_output=streamed
 
-# Rule set
+# Rule sets
 
 ## Files
 import %workspace%/tools/file/files.bazelrc

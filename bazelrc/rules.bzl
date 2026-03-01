@@ -44,7 +44,7 @@ def _bazelrc_impl(ctx):
     bazelrc_content = ""
     outputs = []
     for file in transitive_files.to_list():
-        if not file.root.path and file.is_source:
+        if file.is_source and file.owner and not file.owner.repo_name:
             workspace_path = file.path
         else:
             r_path = runfile_path(workspace, file)

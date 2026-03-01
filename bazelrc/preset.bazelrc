@@ -1,5 +1,7 @@
 # General
 
+startup --windows_enable_symlinks
+
 ## Build
 build -k
 build --guard_against_concurrent_changes
@@ -15,6 +17,9 @@ common:macos --disk_cache ~/Library/Caches/bazel-disk
 
 ## Config
 common --enable_platform_specific_config
+
+## Coverage
+build --experimental_fetch_all_coverage_outputs
 
 ## Profile
 build --nogenerate_json_trace_profile
@@ -36,12 +41,16 @@ common --incompatible_stop_exporting_language_modules
 run --run_in_cwd
 
 ## Runfiles
+build --build_runfile_links
 build --enable_runfiles
 build --incompatible_compact_repo_mapping_manifest
-build --nolegacy_external_runfiles
 
 ## Sandbox
+build --reuse_sandbox_directories
 build --nosandbox_default_allow_network
+
+## Starlark
+common --incompatible_enforce_starlark_utf8=error
 
 ## Test
 test --build_tests_only
@@ -66,8 +75,9 @@ build --incompatible_default_to_explicit_init_py
 build:ci --generate_json_trace_profile
 build:ci --nobuild_runfile_links
 build:ci --remote_download_minimal
+common:ci --lockfile_mode=error
 test:ci --remote_download_regex=.*/test.xml
-common:ci --show_progress_rate_limit=3
+common:ci --show_progress_rate_limit=15
 build:ci --test_env=CI=1
 
 ## Quiet
