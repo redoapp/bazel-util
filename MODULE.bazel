@@ -2,7 +2,7 @@ module(name = "bazel_util")
 
 # Bazel
 
-bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
+bazel_dep(name = "bazel_lib", version = "3.2.1")
 
 # Buildifier
 

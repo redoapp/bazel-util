@@ -1,4 +1,4 @@
-load("@aspect_bazel_lib//lib:copy_file.bzl", "COPY_FILE_TOOLCHAINS", "copy_file_action")
+load("@bazel_lib//lib:copy_file.bzl", "COPY_FILE_TOOLCHAINS", "copy_file_action")
 load("//generate:rules.bzl", "generate")
 load("//util:path.bzl", "runfile_path")
 load(":bazelrc.bzl", "BazelrcInfo")

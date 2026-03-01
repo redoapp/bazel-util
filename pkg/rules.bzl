@@ -1,4 +1,4 @@
-load("@aspect_bazel_lib//lib:glob_match.bzl", "glob_match")
+load("@bazel_lib//lib:glob_match.bzl", "glob_match")
 load("@bazel_util//util:path.bzl", "runfile_path")
 load("@rules_pkg//pkg:providers.bzl", "PackageDirsInfo", "PackageFilegroupInfo", "PackageFilesInfo", "PackageSymlinkInfo")
 
