@@ -59,7 +59,7 @@ include("//tools/python:python.MODULE.bazel")
 
 # Redo Tech
 
-bazel_dep(name = "r_tools")
+bazel_dep(name = "r_tools", dev_dependency = True)
 
 R_TOOLS_VERSION = "9151d0687cdff6827087a8f8a90eb3b91dc59e9f"
 
