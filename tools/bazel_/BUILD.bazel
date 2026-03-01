@@ -6,8 +6,7 @@ bazelrc_gen(
     path = "preset",
     visibility = ["//:__subpackages__"],
     deps = [
-        "//bazelrc:preset",
-        "//file:bazelrc",
+        "@r_tools//bazel/bazelrc:preset",
     ],
 )
 

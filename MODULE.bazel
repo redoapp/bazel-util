@@ -57,6 +57,19 @@ bazel_dep(name = "rules_python", version = "1.8.5")
 
 include("//tools/python:python.MODULE.bazel")
 
+# Redo Tech
+
+bazel_dep(name = "r_tools")
+
+R_TOOLS_VERSION = "9151d0687cdff6827087a8f8a90eb3b91dc59e9f"
+
+archive_override(
+    module_name = "r_tools",
+    integrity = "sha256-Tds/zp8wCibSHjMwxD6wO1fKh0cpNRCHPK+TWLkyQg8=",
+    strip_prefix = "r-tools-%s" % R_TOOLS_VERSION,
+    url = "https://github.com/redoapp/r-tools/archive/%s.tar.gz" % R_TOOLS_VERSION,
+)
+
 # Shell
 
 bazel_dep(name = "rules_shell", version = "0.6.1")

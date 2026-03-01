@@ -1,2 +1,3 @@
 import %workspace%/bazelrc/preset.bazelrc
 import %workspace%/file/file.bazelrc
+import %workspace%/tools/bazel_/preset/r_tools+/bazel/bazelrc/preset.bazelrc
