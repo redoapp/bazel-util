@@ -15,6 +15,7 @@ common --experimental_repository_cache_hardlinks
 common --noexperimental_check_external_repository_files
 common:linux --disk_cache ~/.cache/bazel-disk
 common:macos --disk_cache ~/Library/Caches/bazel-disk
+startup --experimental_remote_repo_contents_cache
 
 ## Config
 common --enable_platform_specific_config
