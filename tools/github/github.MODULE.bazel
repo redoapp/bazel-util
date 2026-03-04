@@ -1,8 +1,7 @@
-http_file = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
-
-http_file(
-    name = "schemastore_github_workflow",
+http = use_extension("//http:extensions.bzl", "http", dev_dependency = True)
+http.file(
+    name = "bazel_util_schemastore_github_workflow",
     downloaded_file_path = "schema.json",
-    sha256 = "bee899219962fcedc944bb321e2b79a5ca9ff8b7aee9136c4edfbb2aa1eb7a06",
     url = "https://raw.githubusercontent.com/SchemaStore/schemastore/402fdd800ea211bd1b9bccb1abcda4a2ba20073c/src/schemas/json/github-workflow.json",
 )
+use_repo(http, schemastore_github_workflow = "bazel_util_schemastore_github_workflow")

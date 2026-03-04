@@ -488,6 +488,14 @@
         }
       }
     },
+    "//http:extensions.bzl%http": {
+      "_": {
+        "_version": "1",
+        "urls": {
+          "https://raw.githubusercontent.com/SchemaStore/schemastore/402fdd800ea211bd1b9bccb1abcda4a2ba20073c/src/schemas/json/github-workflow.json": "sha256-vuiZIZli/O3JRLsyHit5pcqf+Leu6RNsTt+7KqHregY="
+        }
+      }
+    },
     "//jsonschema:extensions.bzl%jsonschema": {
       "_": {
         "sha256s": {
