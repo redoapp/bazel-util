@@ -72,6 +72,27 @@ executable_path = rule(
     implementation = _executable_path_impl,
 )
 
+def _executable_symlink_impl(ctx):
+    name = ctx.attr.name
+    target = ctx.executable.target
+    target_default = ctx.attr.target[DefaultInfo]
+
+    symlink = ctx.actions.declare_file(name)
+    ctx.actions.symlink(output = symlink, target_file = target)
+
+    default_info = DefaultInfo(executable = symlink, runfiles = target_default.default_runfiles)
+
+    return [default_info]
+
+executable_symlink = rule(
+    attrs = {
+        "target": attr.label(cfg = "target", executable = True, mandatory = True),
+    },
+    doc = "Symlink to an executable. Similar to alias, but with a known runfile location.",
+    executable = True,
+    implementation = _executable_symlink_impl,
+)
+
 def _executable_toolchain_impl(ctx):
     executable_default = ctx.attr.executable[DefaultInfo]
 
