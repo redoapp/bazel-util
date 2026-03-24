@@ -20,6 +20,7 @@ def _create_one_digest(actions, output, files, hash, encoding, length = None):
         executable = hash.files_to_run.executable,
         execution_requirements = {
             "requires-worker-protocol": "json",
+            "supports-path-mapping": "1",
             "supports-workers": "1",
         },
         inputs = files,

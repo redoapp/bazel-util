@@ -1,9 +1,16 @@
 load("//generate:providers.bzl", "FormatterInfo")
 
 def _buildifier_format(ctx, path, src, out, bin):
+    args = ctx.actions.args()
+    args.add(bin.executable)
+    args.add(src)
+    args.add(out)
     ctx.actions.run_shell(
+        arguments = [args],
         command = 'cp "$2" "$3" && "$1" "$3"',
-        arguments = [bin.executable.path, src.path, out.path],
+        execution_requirements = {
+            "supports-path-mapping": "1",
+        },
         inputs = [src],
         outputs = [out],
         tools = [bin],

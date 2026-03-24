@@ -29,6 +29,9 @@ def _tar_filter_impl(ctx):
     args.add(output)
     actions.run(
         arguments = [args],
+        execution_requirements = {
+            "supports-path-mapping": "1",
+        },
         inputs = [src],
         outputs = [output],
         executable = filter,

@@ -27,13 +27,16 @@ def _jsonschema_format(ctx, src, out, bin, schema, compiled, options):
     args = ctx.actions.args()
     args.add(bin)
     args.add(schema)
-    args.add(src.path)
+    args.add_all([src], expand_directories = False)
     args.add(compiled)
-    args.add(out.path)
+    args.add_all([out], expand_directories = False)
     options_sh = [shell.quote(option) for option in options]
     ctx.actions.run_shell(
         arguments = [args],
         command = '"$1" validate "$2" "$3" --template="$4" %s && cp -r "$3" "$5"' % " ".join(options_sh),
+        execution_requirements = {
+            "supports-path-mapping": "1",
+        },
         inputs = [bin, schema, src, compiled],
         outputs = [out],
     )
@@ -54,6 +57,9 @@ def _jsonschema_validator_impl(ctx):
     args.add(compiled)
     actions.run_shell(
         command = '"$1" compile -m "$2" > "$3"',
+        execution_requirements = {
+            "supports-path-mapping": "1",
+        },
         arguments = [args],
         inputs = [bin, schema],
         outputs = [compiled],

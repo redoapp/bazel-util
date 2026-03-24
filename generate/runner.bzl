@@ -8,12 +8,15 @@ def create_runner(args_bin, runfiles_fn, name, bash_runfiles, actions, bin, diff
     for path, file_def in file_defs.items():
         diff = actions.declare_file("%s.diff/%s.patch" % (name, path))
         args = actions.args()
-        args.add(file_def.src.path if file_def.src else "")
-        args.add(file_def.generated.path if file_def.generated else "")
+        args.add_all([file_def.src if file_def.src else ""], expand_directories = False)
+        args.add_all([file_def.generated if file_def.generated else ""], expand_directories = False)
         args.add(diff)
         actions.run(
             arguments = [args],
             executable = diff_bin.files_to_run.executable,
+            execution_requirements = {
+                "supports-path-mapping": "1",
+            },
             inputs = ([file_def.src] if file_def.src else []) + ([file_def.generated] if file_def.generated else []),
             mnemonic = "Diff",
             outputs = [diff],

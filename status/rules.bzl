@@ -33,6 +33,9 @@ def _stamp_inner_impl(ctx):
         actions.run_shell(
             arguments = [args],
             command = 'sed -n "s/^$1 //p" "$2" "$3" | tr -d "\\n" > "$4"',
+            execution_requirements = {
+                "supports-path-mapping": "1",
+            },
             inputs = [ctx.info_file, ctx.version_file],
             outputs = [output],
         )

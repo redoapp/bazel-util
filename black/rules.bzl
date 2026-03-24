@@ -40,6 +40,7 @@ def _black_format(ctx, src, out, bin, black_options):
         executable = bin.executable,
         execution_requirements = {
             "requires-worker-protocol": "json",
+            "supports-path-mapping": "1",
             "supports-workers": "1",
         },
         inputs = [src],
