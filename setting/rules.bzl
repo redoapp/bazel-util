@@ -1,11 +1,10 @@
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load(":transitions.bzl", "mode_transition")
 
 def _mode_target_impl(ctx):
     actions = ctx.actions
-    dep_default = ctx.attr.dep[0][DefaultInfo]
-    dep_output_group = ctx.attr.dep[0][OutputGroupInfo] if OutputGroupInfo in ctx.attr.dep[0] else None
-    dep_toolchain = ctx.attr.dep[0][platform_common.ToolchainInfo] if platform_common.ToolchainInfo in ctx.attr.dep[0] else None
+    dep_default = ctx.attr.dep[DefaultInfo]
+    dep_output_group = ctx.attr.dep[OutputGroupInfo] if OutputGroupInfo in ctx.attr.dep else None
+    dep_toolchain = ctx.attr.dep[platform_common.ToolchainInfo] if platform_common.ToolchainInfo in ctx.attr.dep else None
     name = ctx.attr.name
 
     if dep_default.files_to_run.executable:
@@ -29,13 +28,10 @@ def _mode_target_impl(ctx):
 
 mode_bin = rule(
     attrs = {
-        "dep": attr.label(cfg = mode_transition, doc = "Dependency", mandatory = True),
-        "compilation_mode": attr.string(doc = "--compilation_mode, or empty to use existing value"),
-        "platforms": attr.string(doc = "--platforms, or empty to use existing value"),
-        "stamp": attr.int(default = -1, doc = "--stamp, or -1 to use existing value"),
-        "_allowlist_function_transition": attr.label(
-            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
-        ),
+        "dep": attr.label(doc = "Dependency", mandatory = True),
+        "compilation_mode": attr.string(doc = "--compilation_mode (no-op, kept for compatibility)"),
+        "platforms": attr.string(doc = "--platforms (no-op, kept for compatibility)"),
+        "stamp": attr.int(default = -1, doc = "--stamp (no-op, kept for compatibility)"),
     },
     executable = True,
     implementation = _mode_target_impl,
@@ -43,13 +39,10 @@ mode_bin = rule(
 
 mode_target = rule(
     attrs = {
-        "dep": attr.label(cfg = mode_transition, doc = "Dependency", mandatory = True),
-        "compilation_mode": attr.string(doc = "--compilation_mode, or empty to use existing value"),
-        "platforms": attr.string(doc = "--platforms, or empty to use existing value"),
-        "stamp": attr.int(default = -1, doc = "--stamp, or -1 to use existing value"),
-        "_allowlist_function_transition": attr.label(
-            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
-        ),
+        "dep": attr.label(doc = "Dependency", mandatory = True),
+        "compilation_mode": attr.string(doc = "--compilation_mode (no-op, kept for compatibility)"),
+        "platforms": attr.string(doc = "--platforms (no-op, kept for compatibility)"),
+        "stamp": attr.int(default = -1, doc = "--stamp (no-op, kept for compatibility)"),
     },
     implementation = _mode_target_impl,
 )
