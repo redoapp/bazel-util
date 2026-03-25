@@ -152,7 +152,7 @@ def _unzip_impl(ctx):
 
     args = actions.args()
     args.add(src)
-    args.add_all([dir])
+    args.add_all([dir], expand_directories = False)
     args.add(str(strip_components))
     actions.run_shell(
         arguments = [args],
