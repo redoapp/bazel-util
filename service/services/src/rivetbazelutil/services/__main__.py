@@ -7,6 +7,13 @@ from sys import exit, stderr
 
 parser = ArgumentParser(prog="service")
 parser.add_argument("--manifest", type=Path)
+parser.add_argument(
+    "--local-manifest",
+    type=Path,
+    action="append",
+    dest="local_manifests",
+    default=[],
+)
 parser.add_argument("--bazel-arg", action="append", dest="bazel_args", default=[])
 parser.add_argument("--ibazel-arg", action="append", dest="ibazel_args", default=[])
 parser.add_argument("--width", type=int)
@@ -17,6 +24,14 @@ RUNFILES = runfiles.Create()
 
 with args.manifest.open() as manifest_file:
     manifest = load(manifest_file)
+
+# Shallow-merge each local manifest on top of the base. Local wins on any key,
+# whether the value is a group (array) or a service target (string), and new
+# keys in the local manifest extend the base.
+for local_path in args.local_manifests:
+    with local_path.open() as local_file:
+        local_manifest = load(local_file)
+    manifest.update(local_manifest)
 
 services = {}
 visited = set()
