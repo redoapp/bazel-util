@@ -204,7 +204,7 @@
   "moduleExtensions": {
     "//git:extensions.bzl%git": {
       "general": {
-        "bzlTransitiveDigest": "84qEatWHrOgW+/gDUlC0Erqg30U95FGN/3YHCj7gTYw=",
+        "bzlTransitiveDigest": "VLaXYAzP4vRmsgNl83kEyU4anXXcnccwbx0HCsCWehs=",
         "usagesDigest": "/6yFmYubVty75ee3PAZsSaGzLBMO+LEsdPSP+LDAMmY=",
         "recordedInputs": [],
         "generatedRepoSpecs": {

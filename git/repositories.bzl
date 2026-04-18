@@ -1,10 +1,7 @@
 def _git_changed_files_impl(ctx):
     ctx.getenv("BUILD_RANDOM")  # trigger re-run
 
-    build = ctx.attr._build
-    changed_files = ctx.attr._changed_files
     base_ref = ctx.getenv("GIT_BASE_REF") or "HEAD"
-    file_rules = ctx.attr._file_rules
 
     workspace = ctx.path(ctx.attr.root_file).dirname
 
@@ -26,12 +23,17 @@ def _git_changed_files_impl(ctx):
         fail("git ls-files failed:\n%s" % result.stderr)
     files.update(result.stdout.strip().split("\n"))
 
-    ctx.template("BUILD.bazel", build, executable = False, substitutions = {
-        '"%{file_rules}"': repr(str(file_rules)),
-    })
+    ctx.template(
+        "BUILD.bazel",
+        Label("//file:paths_filter.BUILD.bazel.tpl"),
+        executable = False,
+        substitutions = {
+            '"%{file_rules}"': repr(str(Label("//file:rules.bzl"))),
+        },
+    )
     ctx.template(
         "files.bzl",
-        changed_files,
+        Label("//file:paths_filter.bzl.tpl"),
         executable = False,
         substitutions = {
             "%{files}": json.encode(files),
@@ -44,15 +46,6 @@ git_changed_files = repository_rule(
             doc = "A file in the root of the workspace.",
             mandatory = True,
         ),
-        "_build": attr.label(
-            default = "changed_files.BUILD.bazel",
-            doc = "BUILD.bazel template",
-        ),
-        "_changed_files": attr.label(
-            default = "changed_files.bzl.tpl",
-            doc = "files.bzl template",
-        ),
-        "_file_rules": attr.label(default = "//file:rules.bzl"),
     },
     doc = "Git changed files. Must set BUILD_RANDOM to trigger re-run.",
     implementation = _git_changed_files_impl,

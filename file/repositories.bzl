@@ -62,3 +62,36 @@ files = repository_rule(
 )
 
 _FILES_PATH = "files"
+
+def _paths_filter(ctx):
+    manifest = ctx.attr.manifest
+
+    files = ctx.read(manifest).strip().split("\n")
+
+    ctx.template(
+        "BUILD.bazel",
+        Label("paths_filter.BUILD.bazel.tpl"),
+        executable = False,
+        substitutions = {
+            '"%{file_rules}"': repr(str(Label("//file:rules.bzl"))),
+        },
+    )
+    ctx.template(
+        "files.bzl",
+        Label("paths_filter.bzl.tpl"),
+        executable = False,
+        substitutions = {
+            "%{files}": json.encode(files),
+        },
+    )
+
+paths_filter = repository_rule(
+    attrs = {
+        "manifest": attr.label(
+            doc = "A file listing file paths.",
+            mandatory = True,
+        ),
+    },
+    doc = "Manifest files.",
+    implementation = _paths_filter,
+)

@@ -1,4 +1,4 @@
-load(":repositories.bzl", "files")
+load(":repositories.bzl", "files", "paths_filter")
 
 file_tag = tag_class(
     attrs = {
@@ -24,6 +24,19 @@ file_tag = tag_class(
     },
 )
 
+paths_filter_tag = tag_class(
+    attrs = {
+        "manifest": attr.label(
+            doc = "A file listing file paths.",
+            mandatory = True,
+        ),
+        "name": attr.string(
+            doc = "Repository name.",
+            mandatory = True,
+        ),
+    },
+)
+
 def _file_impl(module_ctx):
     for module in module_ctx.modules:
         for info in module.tags.files:
@@ -35,11 +48,18 @@ def _file_impl(module_ctx):
                 ignore_directories = info.ignore_directories,
             )
 
+    for module in module_ctx.modules:
+        for info in module.tags.paths_filter:
+            paths_filter(
+                name = info.name,
+                manifest = info.manifest,
+            )
+
     return module_ctx.extension_metadata(
         reproducible = True,
     )
 
 file = module_extension(
     implementation = _file_impl,
-    tag_classes = {"files": file_tag},
+    tag_classes = {"files": file_tag, "paths_filter": paths_filter_tag},
 )
