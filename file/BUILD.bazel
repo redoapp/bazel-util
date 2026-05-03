@@ -1,6 +1,7 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@bazel_util//bazelrc:rules.bzl", "bazelrc_group")
-load(":rules.bzl", "all_filter")
+load(":rules.bzl", "pattern_filter")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -10,8 +11,14 @@ exports_files([
     "find-packages-runner.sh.tpl",
 ])
 
-all_filter(
-    name = "all_filter",
+string_flag(
+    name = "pattern",
+    build_setting_default = "**",
+)
+
+pattern_filter(
+    name = "pattern_filter",
+    pattern = ":pattern",
 )
 
 bazelrc_group(

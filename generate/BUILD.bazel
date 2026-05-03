@@ -4,7 +4,7 @@ package(default_visibility = ["//visibility:public"])
 
 label_flag(
     name = "format_filter",
-    build_setting_default = "//file:all_filter",
+    build_setting_default = "//file:pattern_filter",
 )
 
 filegroup(

@@ -496,6 +496,17 @@
         }
       }
     },
+    "//ibazel:extensions.bzl%ibazel": {
+      "_": {
+        "sha256s": {
+          "ibazel_darwin_amd64": "b762472c09725ed1ef749102bef6ccb3cafbe91f78028694994c9e4bcc84ebca",
+          "ibazel_darwin_arm64": "d9986f5beb09562489e21cd96bc065e598f29c671aba7c9944a063d70b8a4ea8",
+          "ibazel_linux_amd64": "e621a3bf5d3a0f3cccfd8a6fbd72707398ba37e39897dc8762f3eebf5b08fd9d",
+          "ibazel_linux_arm64": "f7fd7ebd8a604614f2e1a3b2476fe9c055ea88d165da86d3f303d7d6903fb332",
+          "ibazel_windows_amd64.exe": "a5c9020ccfe3285033fb4bffdfe3c04f3eb56de2e90ad2075b12b2010b1f186b"
+        }
+      }
+    },
     "//jsonschema:extensions.bzl%jsonschema": {
       "_": {
         "sha256s": {

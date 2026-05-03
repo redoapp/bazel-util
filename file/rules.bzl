@@ -1,20 +1,36 @@
+load("@bazel_lib//lib:glob_match.bzl", "glob_match")
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
+load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
 load("//util:path.bzl", "output_name", "runfile_path")
 load(":providers.bzl", "FileFilter")
 
-def _all_filter_impl(ctx):
-    file_filter = FileFilter(fn = _always)
-
-    return [file_filter]
-
-all_filter = rule(
-    doc = "Accept all files",
-    implementation = _all_filter_impl,
-    provides = [FileFilter],
-)
-
 def _always(src):
     return True
+
+def _pattern_filter_impl(ctx):
+    pattern = ctx.attr.pattern[BuildSettingInfo].value
+
+    if pattern == "**":
+        fn = _always
+    else:
+        def fn(src):
+            return glob_match(pattern, to_rlocation_path(ctx, src), match_path_separator = True)
+
+    return [FileFilter(fn = fn)]
+
+pattern_filter = rule(
+    attrs = {
+        "pattern": attr.label(
+            doc = "Glob pattern build setting",
+            mandatory = True,
+            providers = [BuildSettingInfo],
+        ),
+    },
+    doc = "Accept files matching a glob pattern",
+    implementation = _pattern_filter_impl,
+    provides = [FileFilter],
+)
 
 def _directory_impl(ctx):
     actions = ctx.actions
