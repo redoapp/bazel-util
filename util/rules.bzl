@@ -1,5 +1,5 @@
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//util:path.bzl", "runfile_path")
 load(":providers.bzl", "create_digest")
 
 def _digest_impl(ctx):
@@ -55,13 +55,12 @@ def _digest_binary_impl(ctx):
     hash = ctx.attr._hash[DefaultInfo]
     name = ctx.attr.name
     runner = ctx.file._runner
-    workspace = ctx.workspace_name
 
     executable = actions.declare_file(name)
     actions.expand_template(
         is_executable = True,
         substitutions = {
-            "%{executable}": shell.quote(runfile_path(workspace, executable_)),
+            "%{executable}": shell.quote(to_rlocation_path(ctx, executable_)),
         },
         template = runner,
         output = executable,

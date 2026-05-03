@@ -29,11 +29,3 @@ def package_path_resolve(label, path):
     if path.startswith("/"):
         return path[len("/"):]
     return "/".join([part for part in [label.package, path] if part])
-
-def runfile_path(workspace, file):
-    path = file.short_path
-    if path.startswith("../"):
-        path = path[len("../"):]
-    else:
-        path = "%s/%s" % (workspace, path)
-    return path

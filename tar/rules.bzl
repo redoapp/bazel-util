@@ -1,5 +1,4 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@bazel_util//util:path.bzl", "runfile_path")
 
 def _tar_filter_impl(ctx):
     actions = ctx.actions

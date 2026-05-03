@@ -1,5 +1,5 @@
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//util:path.bzl", "runfile_path")
 
 def _cache_src_impl(ctx):
     actions = ctx.actions
@@ -25,10 +25,10 @@ def _cache_src_impl(ctx):
         is_executable = True,
         output = executable,
         substitutions = {
-            "%{content}": shell.quote(runfile_path(workspace, content)),
-            "%{key}": shell.quote(runfile_path(workspace, key)),
+            "%{content}": shell.quote(to_rlocation_path(ctx, content)),
+            "%{key}": shell.quote(to_rlocation_path(ctx, key)),
             "%{output}": shell.quote(output),
-            "%{store}": shell.quote(runfile_path(workspace, store)),
+            "%{store}": shell.quote(to_rlocation_path(ctx, store)),
             "%{target}": shell.quote("%s/%s/%s" % (workspace, label.package or "_", name)),
         },
         template = runner,

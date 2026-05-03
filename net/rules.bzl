@@ -1,5 +1,5 @@
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//util:path.bzl", "runfile_path")
 
 def _ibazel_sock_activate_impl(ctx):
     actions = ctx.actions
@@ -12,7 +12,6 @@ def _ibazel_sock_activate_impl(ctx):
     server = ctx.executable._server
     server_default = ctx.attr._server[DefaultInfo]
     runner = ctx.file._runner
-    workspace = ctx.workspace_name
 
     # Build args from either addrs (quoted) or ports (with env var expansion)
     if ports and addrs:
@@ -30,8 +29,8 @@ def _ibazel_sock_activate_impl(ctx):
         output = executable,
         substitutions = {
             "%{args}": args,
-            "%{bin}": shell.quote(runfile_path(workspace, bin)),
-            "%{sock_activate}": shell.quote(runfile_path(workspace, server)),
+            "%{bin}": shell.quote(to_rlocation_path(ctx, bin)),
+            "%{sock_activate}": shell.quote(to_rlocation_path(ctx, server)),
         },
         template = runner,
     )
@@ -77,7 +76,6 @@ def _sock_activate_impl(ctx):
     server = ctx.executable._server
     server_default = ctx.attr._server[DefaultInfo]
     runner = ctx.file._runner
-    workspace = ctx.workspace_name
 
     # Build args from either addrs (quoted) or ports (with env var expansion)
     if ports and addrs:
@@ -95,8 +93,8 @@ def _sock_activate_impl(ctx):
         output = executable,
         substitutions = {
             "%{args}": args,
-            "%{bin}": shell.quote(runfile_path(workspace, bin)),
-            "%{sock_activate}": shell.quote(runfile_path(workspace, server)),
+            "%{bin}": shell.quote(to_rlocation_path(ctx, bin)),
+            "%{sock_activate}": shell.quote(to_rlocation_path(ctx, server)),
         },
         template = runner,
     )
@@ -142,7 +140,6 @@ def _sock_activate_proxy_impl(ctx):
     runner = ctx.file._runner
     server = ctx.executable._server
     server_default = ctx.attr._server[DefaultInfo]
-    workspace = ctx.workspace_name
 
     executable = actions.declare_file(name)
     actions.expand_template(
@@ -152,8 +149,8 @@ def _sock_activate_proxy_impl(ctx):
             "%{args}": " ".join(
                 [shell.quote("--forward=%s") % addr for addr in forwards] + [shell.quote("--listen=%s") % addr for addr in listens],
             ),
-            "%{bin}": shell.quote(runfile_path(workspace, bin)),
-            "%{sock_activate}": shell.quote(runfile_path(workspace, server)),
+            "%{bin}": shell.quote(to_rlocation_path(ctx, bin)),
+            "%{sock_activate}": shell.quote(to_rlocation_path(ctx, server)),
         },
         template = runner,
     )

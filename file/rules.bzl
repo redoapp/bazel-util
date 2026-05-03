@@ -2,7 +2,7 @@ load("@bazel_lib//lib:glob_match.bzl", "glob_match")
 load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
-load("//util:path.bzl", "output_name", "runfile_path")
+load("//util:path.bzl", "output_name")
 load(":providers.bzl", "FileFilter")
 
 def _always(src):
@@ -203,13 +203,12 @@ def _find_packages_impl(ctx):
     prefix = ctx.attr.prefix
     roots = ctx.attr.roots
     runner = ctx.file._runner
-    workspace = ctx.workspace_name
 
     executable = actions.declare_file(name)
     actions.expand_template(
         output = executable,
         substitutions = {
-            "%{find_packages}": runfile_path(workspace, find_packages),
+            "%{find_packages}": to_rlocation_path(ctx, find_packages),
             "%{exclude_directory_options}": " ".join([
                 "--exclude-directory=%s" % shell.quote(pattern)
                 for pattern in exclude_directories
@@ -264,7 +263,6 @@ def _bazelrc_deleted_packages_gen_impl(ctx):
         output = "%s/%s" % (ctx.label.package, output)
     name = ctx.attr.name
     runner = ctx.file._runner
-    workspace = ctx.workspace_name
 
     args = []
     if config:
@@ -279,8 +277,8 @@ def _bazelrc_deleted_packages_gen_impl(ctx):
         output = executable,
         substitutions = {
             "%{args}": " ".join(args),
-            "%{deleted_packages}": shell.quote(runfile_path(workspace, deleted_packages)),
-            "%{commands}": "; ".join(['"$(rlocation %s)"' % shell.quote(runfile_path(workspace, default_info.files_to_run.executable)) for default_info in packages_default]),
+            "%{deleted_packages}": shell.quote(to_rlocation_path(ctx, deleted_packages)),
+            "%{commands}": "; ".join(['"$(rlocation %s)"' % shell.quote(to_rlocation_path(ctx, default_info.files_to_run.executable)) for default_info in packages_default]),
             "%{output}": shell.quote(output),
         },
         template = runner,
@@ -337,7 +335,6 @@ def _bazelrc_deleted_packages_diff_impl(ctx):
         output = "%s/%s" % (ctx.label.package, output)
     name = ctx.attr.name
     runner = ctx.file._runner
-    workspace = ctx.workspace_name
 
     args = []
     if config:
@@ -352,8 +349,8 @@ def _bazelrc_deleted_packages_diff_impl(ctx):
         output = executable,
         substitutions = {
             "%{args}": " ".join(args),
-            "%{deleted_packages}": shell.quote(runfile_path(workspace, deleted_packages)),
-            "%{commands}": "; ".join(['"$(rlocation %s)"' % shell.quote(runfile_path(workspace, default_info.files_to_run.executable)) for default_info in packages_default]),
+            "%{deleted_packages}": shell.quote(to_rlocation_path(ctx, deleted_packages)),
+            "%{commands}": "; ".join(['"$(rlocation %s)"' % shell.quote(to_rlocation_path(ctx, default_info.files_to_run.executable)) for default_info in packages_default]),
             "%{label}": shell.quote(str(gen_label)),
             "%{output}": shell.quote(output),
         },

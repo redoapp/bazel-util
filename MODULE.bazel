@@ -28,11 +28,11 @@ include("//ibazel:ibazel.MODULE.bazel")
 
 bazel_dep(name = "rules_javascript", dev_dependency = True)
 
-RULES_JAVASCRIPT_VERSION = "40bf21d51264c67b8c8c02c4ec8a31bf2f4d4138"
+RULES_JAVASCRIPT_VERSION = "f285258dae16b848c1de1c761cc50c8397b664d1"
 
 archive_override(
     module_name = "rules_javascript",
-    sha256 = "3552698824e7056281287822df3e11047069dfc902b7e1a5d505ec8b00cc27a9",
+    sha256 = "7b79cf59fc06977ce5c471dd65661dfb6a17630a03fcecda3c860abe1e9d4ba8",
     strip_prefix = "rules_javascript-%s" % RULES_JAVASCRIPT_VERSION,
     url = "https://github.com/redoapp/rules_javascript/archive/%s.tar.gz" % RULES_JAVASCRIPT_VERSION,
 )
@@ -61,11 +61,11 @@ include("//tools/python:python.MODULE.bazel")
 
 bazel_dep(name = "r_tools", dev_dependency = True)
 
-R_TOOLS_VERSION = "9151d0687cdff6827087a8f8a90eb3b91dc59e9f"
+R_TOOLS_VERSION = "0463cc21a11265216d5de0d9f0b6cea84411aac1"
 
 archive_override(
     module_name = "r_tools",
-    integrity = "sha256-Tds/zp8wCibSHjMwxD6wO1fKh0cpNRCHPK+TWLkyQg8=",
+    integrity = "sha256-KGyW7D6itHePuBnsIafLG2ZUfvaX5iWFMwFHepfRo8w=",
     strip_prefix = "r-tools-%s" % R_TOOLS_VERSION,
     url = "https://github.com/redoapp/r-tools/archive/%s.tar.gz" % R_TOOLS_VERSION,
 )
@@ -78,11 +78,11 @@ bazel_dep(name = "rules_shell", version = "0.6.1")
 
 bazel_dep(name = "rules_shell_extra")
 
-RULES_SHELL_EXTRA_VERSION = "93090b47f81577ba4890c770effd889f61ce5d19"
+RULES_SHELL_EXTRA_VERSION = "ef9a80e7f6d4b8303382ac64214c39cc2b3b7794"
 
 archive_override(
     module_name = "rules_shell_extra",
-    sha256 = "c69a83b7afefa03b21c370c2044c63c41800820f51680022604133a098e2c932",
+    sha256 = "49c96a95dd040dfbf2d13f872a88064a8efacc9000752b25815e53581d057e6b",
     strip_prefix = "rules_shell_extra-%s" % RULES_SHELL_EXTRA_VERSION,
     url = "https://github.com/redoapp/rules_shell_extra/archive/%s.tar.gz" % RULES_SHELL_EXTRA_VERSION,
 )

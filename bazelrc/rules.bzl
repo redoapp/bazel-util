@@ -1,6 +1,6 @@
 load("@bazel_lib//lib:copy_file.bzl", "COPY_FILE_TOOLCHAINS", "copy_file_action")
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("//generate:rules.bzl", "generate")
-load("//util:path.bzl", "runfile_path")
 load(":bazelrc.bzl", "BazelrcInfo")
 
 def _bazelrc_group_impl(ctx):
@@ -34,7 +34,6 @@ def _bazelrc_impl(ctx):
     label = ctx.label
     path = ctx.attr.path or ctx.attr.name
     srcs = ctx.files.srcs
-    workspace = ctx.workspace_name
 
     transitive_files = depset(
         srcs,
@@ -47,7 +46,7 @@ def _bazelrc_impl(ctx):
         if file.is_source and file.owner and not file.owner.repo_name:
             workspace_path = file.path
         else:
-            r_path = runfile_path(workspace, file)
+            r_path = to_rlocation_path(ctx, file)
             output = ctx.actions.declare_file("%s/%s" % (path, r_path))
             outputs.append(output)
             copy_file_action(ctx, src = file, dst = output)

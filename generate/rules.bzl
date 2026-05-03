@@ -1,6 +1,7 @@
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("//file:providers.bzl", "FileFilter")
-load("//util:path.bzl", "output_name", "runfile_path")
+load("//util:path.bzl", "output_name")
 load(":providers.bzl", "FormatterInfo")
 load(":runner.bzl", "create_runner")
 
@@ -20,7 +21,6 @@ def _format_impl(ctx):
     prefix = ctx.attr.prefix
     strip_prefix = ctx.attr.strip_prefix
     srcs = ctx.files.srcs
-    workspace_name = ctx.workspace_name
 
     file_defs = {}
     for src in srcs:
@@ -38,6 +38,7 @@ def _format_impl(ctx):
         args_bin = args_default,
         bash_runfiles = bash_runfiles_default.default_runfiles,
         bin = bin,
+        ctx = ctx,
         diff_bin = diff,
         dir_mode = dir_mode,
         file_defs = file_defs,
@@ -47,7 +48,6 @@ def _format_impl(ctx):
         run_bin = run,
         runfiles_fn = ctx.runfiles,
         runner_template = runner,
-        workspace_name = workspace_name,
     )
 
     return [default_info]
@@ -148,7 +148,6 @@ def _generate_impl(ctx):
     )
     src_strip_prefix = ctx.attr.src_strip_prefix
     srcs = ctx.files.srcs
-    workspace_name = ctx.workspace_name
 
     file_defs = {}
     for src in srcs:
@@ -167,6 +166,7 @@ def _generate_impl(ctx):
         args_bin = args_default,
         bash_runfiles = bash_runfiles_default.default_runfiles,
         bin = bin,
+        ctx = ctx,
         diff_bin = diff,
         dir_mode = dir_mode,
         file_defs = file_defs,
@@ -176,7 +176,6 @@ def _generate_impl(ctx):
         run_bin = run,
         runfiles_fn = ctx.runfiles,
         runner_template = runner,
-        workspace_name = workspace_name,
     )
 
     return [default_info]
@@ -237,7 +236,6 @@ def _multi_generate_impl(ctx):
     deps = [target[DefaultInfo] for target in ctx.attr.deps]
     name = ctx.attr.name
     runner = ctx.file._runner
-    workspace_name = ctx.workspace_name
 
     runfiles = bash_runfiles_default.default_runfiles
     runfiles = runfiles.merge_all([dep.default_runfiles for dep in deps])
@@ -249,7 +247,7 @@ def _multi_generate_impl(ctx):
         output = bin,
         substitutions = {
             "%{formats}": " ".join([
-                shell.quote(runfile_path(workspace_name, dep.files_to_run.executable))
+                shell.quote(to_rlocation_path(ctx, dep.files_to_run.executable))
                 for dep in deps
             ]),
         },
@@ -285,7 +283,6 @@ def _generate_test_impl(ctx):
     generate_info = ctx.attr.generate[DefaultInfo]
     name = ctx.attr.name
     tester = ctx.file._tester
-    workspace_name = ctx.workspace_name
 
     bin = actions.declare_file(name)
     actions.expand_template(
@@ -293,7 +290,7 @@ def _generate_test_impl(ctx):
         template = tester,
         output = bin,
         substitutions = {
-            "%{bin}": shell.quote(runfile_path(workspace_name, generate_info.files_to_run.executable)),
+            "%{bin}": shell.quote(to_rlocation_path(ctx, generate_info.files_to_run.executable)),
         },
     )
 

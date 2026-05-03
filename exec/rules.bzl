@@ -1,5 +1,5 @@
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//util:path.bzl", "runfile_path")
 
 def _command_impl(ctx):
     actions = ctx.actions
@@ -11,12 +11,11 @@ def _command_impl(ctx):
     data_default = [target[DefaultInfo] for target in ctx.attr.data]
     name = ctx.attr.name
     runner = ctx.file._runner
-    workspace = ctx.workspace_name
 
     executable = actions.declare_file(name)
     actions.expand_template(
         substitutions = {
-            "%{bin}": shell.quote(runfile_path(workspace, bin)),
+            "%{bin}": shell.quote(to_rlocation_path(ctx, bin)),
             "%{args}": " ".join([shell.quote(ctx.expand_location(arg)) for arg in args]),
         },
         is_executable = True,

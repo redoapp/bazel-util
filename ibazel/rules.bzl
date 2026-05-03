@@ -1,5 +1,5 @@
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//util:path.bzl", "runfile_path")
 
 def _ibazel_impl(ctx):
     actions = ctx.actions
@@ -7,13 +7,12 @@ def _ibazel_impl(ctx):
     ibazel = ctx.toolchains[":toolchain_type"]
     name = ctx.attr.name
     template = ctx.file._template
-    workspace = ctx.workspace_name
 
     executable = actions.declare_file(name)
     actions.expand_template(
         is_executable = True,
         substitutions = {
-            "%{exec}": shell.quote(runfile_path(workspace, ibazel.ibazel)),
+            "%{exec}": shell.quote(to_rlocation_path(ctx, ibazel.ibazel)),
         },
         template = template,
         output = executable,

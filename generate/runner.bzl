@@ -1,7 +1,7 @@
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//util:path.bzl", "runfile_path")
 
-def create_runner(args_bin, runfiles_fn, name, bash_runfiles, actions, bin, diff_bin, dir_mode, file_mode, label, run_bin, runner_template, file_defs, workspace_name):
+def create_runner(args_bin, runfiles_fn, name, bash_runfiles, actions, bin, diff_bin, dir_mode, file_mode, label, run_bin, runner_template, file_defs, ctx):
     check_args = []
     write_args = []
     diffs = []
@@ -28,7 +28,7 @@ def create_runner(args_bin, runfiles_fn, name, bash_runfiles, actions, bin, diff
         check_args.append(
             struct(
                 diff = diff,
-                args = [runfile_path(workspace_name, diff)],
+                args = [to_rlocation_path(ctx, diff)],
             ),
         )
         write_args.append(
@@ -37,8 +37,8 @@ def create_runner(args_bin, runfiles_fn, name, bash_runfiles, actions, bin, diff
                 args = [
                     "--file",
                     path,
-                    runfile_path(workspace_name, file_def.generated) if file_def.generated else "",
-                    runfile_path(workspace_name, diff),
+                    to_rlocation_path(ctx, file_def.generated) if file_def.generated else "",
+                    to_rlocation_path(ctx, diff),
                 ],
             ),
         )
@@ -67,11 +67,11 @@ def create_runner(args_bin, runfiles_fn, name, bash_runfiles, actions, bin, diff
         template = runner_template,
         output = bin,
         substitutions = {
-            "%{check_args}": shell.quote(runfile_path(workspace_name, check_args_file)),
+            "%{check_args}": shell.quote(to_rlocation_path(ctx, check_args_file)),
             "%{dir_mode}": shell.quote(dir_mode),
             "%{label}": shell.quote(str(label)),
             "%{file_mode}": shell.quote(file_mode),
-            "%{write_args}": shell.quote(runfile_path(workspace_name, write_args_file)),
+            "%{write_args}": shell.quote(to_rlocation_path(ctx, write_args_file)),
         },
     )
 

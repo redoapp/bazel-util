@@ -1,5 +1,5 @@
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
-load("//util:path.bzl", "runfile_path")
 
 def _services_impl(ctx):
     actions = ctx.actions
@@ -12,7 +12,6 @@ def _services_impl(ctx):
     runner = ctx.file._runner
     services = ctx.executable._services
     services_default = ctx.attr._services[DefaultInfo]
-    workspace = ctx.workspace_name
 
     args = []
     for arg in bazel_args:
@@ -26,7 +25,7 @@ def _services_impl(ctx):
     for f in local_manifests:
         local_manifest_parts.append("--local-manifest")
         local_manifest_parts.append(
-            "\"$(rlocation %s)\"" % shell.quote(runfile_path(workspace, f)),
+            "\"$(rlocation %s)\"" % shell.quote(to_rlocation_path(ctx, f)),
         )
 
     executable = actions.declare_file(name)
@@ -35,8 +34,8 @@ def _services_impl(ctx):
         substitutions = {
             "%{args}": " ".join([shell.quote(arg) for arg in args]),
             "%{local_manifest_args}": " ".join(local_manifest_parts),
-            "%{manifest}": shell.quote(runfile_path(workspace, manifest)),
-            "%{services}": shell.quote(runfile_path(workspace, services)),
+            "%{manifest}": shell.quote(to_rlocation_path(ctx, manifest)),
+            "%{services}": shell.quote(to_rlocation_path(ctx, services)),
         },
         template = runner,
         output = executable,

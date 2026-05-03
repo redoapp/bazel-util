@@ -1,13 +1,13 @@
 load("@bazel_lib//lib:glob_match.bzl", "glob_match")
-load("@bazel_util//util:path.bzl", "runfile_path")
+load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@rules_pkg//pkg:providers.bzl", "PackageDirsInfo", "PackageFilegroupInfo", "PackageFilesInfo", "PackageSymlinkInfo")
 
-def _runfiles_symlinks(workspace_name, runfiles):
+def _runfiles_symlinks(ctx, runfiles):
     files = {}
     for file in runfiles.files.to_list():
-        files[runfile_path(workspace_name, file)] = file
+        files[to_rlocation_path(ctx, file)] = file
     for file in runfiles.symlinks.to_list():
-        files[file.path] = "%s/%s" % (workspace_name, file.target_file)
+        files[file.path] = "%s/%s" % (ctx.workspace_name, file.target_file)
     for file in runfiles.root_symlinks.to_list():
         files[file.path] = file.target_file
     return files
@@ -17,9 +17,8 @@ def _pkg_executable_impl(ctx):
     bin_default = ctx.attr.bin[DefaultInfo]
     path = ctx.attr.path
     label = ctx.label
-    workspace_name = ctx.workspace_name
 
-    runfiles_symlinks = _runfiles_symlinks(workspace_name, bin_default.default_runfiles)
+    runfiles_symlinks = _runfiles_symlinks(ctx, bin_default.default_runfiles)
     pkg_files = PackageFilesInfo(
         dest_src_map = {"%s.files/%s" % (path, file.path): file for file in [bin] + runfiles_symlinks.values()},
         attributes = {"mode": "0755"},
