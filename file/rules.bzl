@@ -235,6 +235,7 @@ find_packages = rule(
 
 def _bazelrc_deleted_packages_gen_impl(ctx):
     actions = ctx.actions
+    bash_runfiles_default = ctx.attr._bash_runfiles[DefaultInfo]
     config = ctx.attr.config
     deleted_packages = ctx.executable._deleted_packages
     deleted_packages_default = ctx.attr._deleted_packages[DefaultInfo]
@@ -253,6 +254,8 @@ def _bazelrc_deleted_packages_gen_impl(ctx):
     if config:
         args.append("--config")
         args.append(shell.quote(config))
+    args.append("--label")
+    args.append(shell.quote(str(label)))
 
     executable = actions.declare_file(name)
     actions.expand_template(
@@ -261,14 +264,14 @@ def _bazelrc_deleted_packages_gen_impl(ctx):
         substitutions = {
             "%{args}": " ".join(args),
             "%{deleted_packages}": shell.quote(runfile_path(workspace, deleted_packages)),
-            "%{commands}": "; ".join(['"$RUNFILES_DIR"/%s' % shell.quote(runfile_path(workspace, default_info.files_to_run.executable)) for default_info in packages_default]),
-            "%{label}": shell.quote(str(label)),
+            "%{commands}": "; ".join(['"$(rlocation %s)"' % shell.quote(runfile_path(workspace, default_info.files_to_run.executable)) for default_info in packages_default]),
             "%{output}": shell.quote(output),
         },
         template = runner,
     )
 
     runfiles = deleted_packages_default.default_runfiles
+    runfiles = runfiles.merge(bash_runfiles_default.default_runfiles)
     runfiles = runfiles.merge_all([default_info.default_runfiles for default_info in packages_default])
     default_info = DefaultInfo(
         executable = executable,
@@ -286,6 +289,9 @@ _bazelrc_deleted_packages_gen = rule(
         "packages": attr.label_list(
             mandatory = True,
         ),
+        "_bash_runfiles": attr.label(
+            default = "@bazel_tools//tools/bash/runfiles",
+        ),
         "_deleted_packages": attr.label(
             cfg = "target",
             default = "//file/deleted-packages:bin",
@@ -302,6 +308,7 @@ _bazelrc_deleted_packages_gen = rule(
 
 def _bazelrc_deleted_packages_diff_impl(ctx):
     actions = ctx.actions
+    bash_runfiles_default = ctx.attr._bash_runfiles[DefaultInfo]
     config = ctx.attr.config
     deleted_packages = ctx.executable._deleted_packages
     deleted_packages_default = ctx.attr._deleted_packages[DefaultInfo]
@@ -320,6 +327,8 @@ def _bazelrc_deleted_packages_diff_impl(ctx):
     if config:
         args.append("--config")
         args.append(shell.quote(config))
+    args.append("--label")
+    args.append(shell.quote(str(gen_label)))
 
     executable = actions.declare_file(name)
     actions.expand_template(
@@ -328,7 +337,7 @@ def _bazelrc_deleted_packages_diff_impl(ctx):
         substitutions = {
             "%{args}": " ".join(args),
             "%{deleted_packages}": shell.quote(runfile_path(workspace, deleted_packages)),
-            "%{commands}": "; ".join(['"$RUNFILES_DIR"/%s' % shell.quote(runfile_path(workspace, default_info.files_to_run.executable)) for default_info in packages_default]),
+            "%{commands}": "; ".join(['"$(rlocation %s)"' % shell.quote(runfile_path(workspace, default_info.files_to_run.executable)) for default_info in packages_default]),
             "%{label}": shell.quote(str(gen_label)),
             "%{output}": shell.quote(output),
         },
@@ -336,6 +345,7 @@ def _bazelrc_deleted_packages_diff_impl(ctx):
     )
 
     runfiles = deleted_packages_default.default_runfiles
+    runfiles = runfiles.merge(bash_runfiles_default.default_runfiles)
     runfiles = runfiles.merge_all([default_info.default_runfiles for default_info in packages_default])
     default_info = DefaultInfo(
         executable = executable,
@@ -355,6 +365,9 @@ _bazelrc_deleted_packages_diff = rule(
         ),
         "packages": attr.label_list(
             mandatory = True,
+        ),
+        "_bash_runfiles": attr.label(
+            default = "@bazel_tools//tools/bash/runfiles",
         ),
         "_deleted_packages": attr.label(
             cfg = "target",
