@@ -6,4 +6,4 @@ build --@bazel_util//generate:format_filter=@git_changed_files//:filter
 # Configs
 
 ## Lint all
-build:lint_all --@bazel_util//generate:format_filter=@bazel_util//file:all_filter
+build:lint_all --@bazel_util//generate:format_filter=@bazel_util//file:pattern_filter
