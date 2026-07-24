@@ -17,6 +17,11 @@ file_tag = tag_class(
             doc =
                 "Directory patterns to ignore. See ignore_directories() in REPO.bazel.",
         ),
+        "ignore_directories_manifest": attr.label(
+            doc =
+                "File of newline-delimited directory patterns to ignore, generated " +
+                "from ignore_directories() in REPO.bazel.",
+        ),
         "name": attr.string(
             doc = "Repository name.",
             mandatory = True,
@@ -45,7 +50,7 @@ def _file_impl(module_ctx):
                 bazelignore = info.bazelignore,
                 bazelrc = info.bazelrc,
                 build = info.build,
-                ignore_directories = info.ignore_directories,
+                ignore_directories_manifest = info.ignore_directories_manifest,
             )
 
     for module in module_ctx.modules:

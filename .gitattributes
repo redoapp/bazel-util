@@ -4,3 +4,4 @@ npm.json linguist-generated
 /tools/bazel_/bazelrc/ linguist-vendored
 /tools/bazel_/preset.bazelrc linguist-generated
 /tools/file/files.bazelrc linguist-generated
+/tools/file/ignore-directories.txt linguist-generated

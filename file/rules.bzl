@@ -2,6 +2,7 @@ load("@bazel_lib//lib:glob_match.bzl", "glob_match")
 load("@bazel_lib//lib:paths.bzl", "to_rlocation_path")
 load("@bazel_skylib//lib:shell.bzl", "shell")
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
+load("//generate:rules.bzl", "generate")
 load("//util:path.bzl", "output_name")
 load(":providers.bzl", "FileFilter")
 
@@ -395,6 +396,84 @@ _bazelrc_deleted_packages_diff = rule(
     implementation = _bazelrc_deleted_packages_diff_impl,
     executable = True,
 )
+
+def _ignore_directories_manifest_impl(ctx):
+    actions = ctx.actions
+    ignore_directories = ctx.attr._ignore_directories[DefaultInfo]
+    manifest = ctx.file.manifest
+    name = ctx.attr.name
+    repo = ctx.file.repo
+
+    output = actions.declare_file("%s.out/%s" % (name, manifest.basename))
+
+    args = actions.args()
+    args.add("--output", output)
+    args.add(repo)
+
+    actions.run(
+        arguments = [args],
+        executable = ignore_directories.files_to_run.executable,
+        inputs = [repo],
+        outputs = [output],
+        tools = [ignore_directories.files_to_run],
+    )
+
+    default_info = DefaultInfo(files = depset([output]))
+
+    return [default_info]
+
+_ignore_directories_manifest = rule(
+    attrs = {
+        "manifest": attr.label(
+            allow_single_file = True,
+            doc = "Manifest file to write.",
+            mandatory = True,
+        ),
+        "repo": attr.label(
+            allow_single_file = True,
+            doc = "REPO.bazel file to read ignore_directories() from.",
+            mandatory = True,
+        ),
+        "_ignore_directories": attr.label(
+            cfg = "exec",
+            default = "//file/ignore-directories:bin",
+            executable = True,
+        ),
+    },
+    implementation = _ignore_directories_manifest_impl,
+)
+
+def ignore_directories_manifest(name, manifest, repo, visibility = None):
+    """Generate a manifest of directory patterns from ignore_directories() in REPO.bazel.
+
+    Args:
+      name: Generator target. Run it to update the manifest.
+      manifest: Manifest file to write.
+      repo: REPO.bazel file to read ignore_directories() from.
+      visibility: Visibility.
+    """
+    package = native.package_relative_label(manifest).package
+
+    _ignore_directories_manifest(
+        name = "%s.gen" % name,
+        manifest = manifest,
+        repo = repo,
+    )
+
+    generate(
+        name = name,
+        data = [":%s.gen" % name],
+        data_prefix = "/%s" % package,
+        data_strip_prefix = "/%s" % "/".join([
+            part
+            for part in [native.package_name(), "%s.gen.out" % name]
+            if part
+        ]),
+        src_prefix = "/",
+        src_strip_prefix = "/",
+        srcs = [manifest],
+        visibility = visibility,
+    )
 
 def bazelrc_deleted_packages(name, output, packages, config = None, visibility = None):
     _bazelrc_deleted_packages_gen(

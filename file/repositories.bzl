@@ -10,10 +10,33 @@ def _files_impl(ctx):
     bazelignore = ctx.attr.bazelignore
     bazelrc = ctx.attr.bazelrc
     build = ctx.attr.build
-    ignore_directories = ctx.attr.ignore_directories
+    ignore_directories_manifest = ctx.attr.ignore_directories_manifest
     workspace_root = ctx.workspace_root
 
     ctx.symlink(build, BUILD_PATH)
+
+    if ignore_directories_manifest:
+        ignore_directories = [
+            path
+            for path in ctx.read(ignore_directories_manifest).split("\n")
+            if path and not path.startswith("#")
+        ]
+    else:
+        ignore_directories = []
+
+    ctx.template(
+        "gen/%s" % BUILD_PATH,
+        Label("gen.BUILD.bazel.tpl"),
+        executable = False,
+        substitutions = {
+            "%{generate_rules}": repr(str(Label("//generate:rules.bzl"))),
+            "%{ignore_directories_manifest}": repr(str(ignore_directories_manifest)),
+            "%{repo}": repr(str(
+                ignore_directories_manifest.relative("//:%s" % REPO_PATH),
+            )),
+            "%{rules}": repr(str(Label("rules.bzl"))),
+        },
+    )
 
     ctx.template(
         "packages/%s" % BUILD_PATH,
@@ -54,9 +77,11 @@ files = repository_rule(
         "bazelignore": attr.label(allow_single_file = True),
         "bazelrc": attr.string(mandatory = True),
         "build": attr.label(allow_single_file = True, mandatory = True),
-        "ignore_directories": attr.string_list(
+        "ignore_directories_manifest": attr.label(
+            allow_single_file = True,
             doc =
-                "Directory patterns to ignore. See ignore_directories() in REPO.bazel.",
+                "File of newline-delimited directory patterns to ignore, generated " +
+                "from ignore_directories() in REPO.bazel of the same repository.",
         ),
     },
 )
