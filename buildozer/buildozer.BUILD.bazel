@@ -1,0 +1,13 @@
+load("%{rules}", "buildozer_toolchain")
+load("%{sh_binary_rules}", "sh_binary")
+
+sh_binary(
+    name = "bin",
+    srcs = ["buildozer"],
+)
+
+buildozer_toolchain(
+    name = "toolchain",
+    buildozer = ":bin",
+    visibility = ["//visibility:public"],
+)

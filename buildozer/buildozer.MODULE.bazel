@@ -1,0 +1,17 @@
+buildozer = use_extension("//buildozer:extensions.bzl", "buildozer")
+use_repo(
+    buildozer,
+    "buildozer_darwin_amd64",
+    "buildozer_darwin_arm64",
+    "buildozer_linux_amd64",
+    "buildozer_linux_arm64",
+    "buildozer_windows_amd64",
+)
+
+register_toolchains(
+    "//buildozer:linux_amd64_toolchain",
+    "//buildozer:linux_arm64_toolchain",
+    "//buildozer:macos_amd64_toolchain",
+    "//buildozer:macos_arm64_toolchain",
+    "//buildozer:windows_amd64_toolchain",
+)
