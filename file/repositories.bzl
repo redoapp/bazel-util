@@ -11,7 +11,12 @@ def _files_impl(ctx):
     bazelrc = ctx.attr.bazelrc
     build = ctx.attr.build
     ignore_directories_manifest = ctx.attr.ignore_directories_manifest
-    workspace_root = ctx.workspace_root
+
+    # ctx.workspace_root is an untracked implicit input, so checkouts sharing an
+    # output base keep whichever root fetched this repo last. Reading the root
+    # from the environment registers it as a dependency, so Bazel refetches when
+    # the invoking checkout changes.
+    workspace_root = ctx.getenv(_WORKSPACE_ROOT_ENV) or ctx.workspace_root
 
     ctx.symlink(build, BUILD_PATH)
 
@@ -87,6 +92,8 @@ files = repository_rule(
 )
 
 _FILES_PATH = "files"
+
+_WORKSPACE_ROOT_ENV = "BAZEL_UTIL_WORKSPACE_ROOT"
 
 def _paths_filter(ctx):
     manifest = ctx.attr.manifest
