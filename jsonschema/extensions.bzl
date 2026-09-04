@@ -21,7 +21,7 @@ def _jsonschema_impl(module_ctx):
 
     facts = module_ctx.facts.get(_FACTS_KEY)
 
-    sha256s = module_ctx.facts.get("sha256s")
+    sha256s = facts["sha256s"] if facts else None
     if sha256s == None:
         sha256s = {}
         module_ctx.download(
