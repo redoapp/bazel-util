@@ -1,0 +1,43 @@
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+load("//query:rules.bzl", "query_bzl", "query_bzls")
+
+query_bzl(
+    name = "tests_bzl",
+    exclude = [
+        # A package with no target name, which the query resolves to //a:a.
+        "//query/test/excluded",
+        ":one",
+    ],
+    kind = ".*_test",
+    out = "tests.bzl",
+    tag = "example",
+)
+
+query_bzl(
+    name = "roots_bzl",
+    kind = "cjs_root",
+    out = "/generated/roots.bzl",
+)
+
+query_bzls(
+    name = "batch",
+    deps = [
+        ":roots_bzl",
+        ":tests_bzl",
+    ],
+)
+
+sh_test(
+    name = "manifest",
+    srcs = ["test_manifest.sh"],
+    data = [
+        "batch.golden.json",
+        "tests_bzl.golden.json",
+        ":batch",
+        ":tests_bzl",
+    ],
+)
+
+test_suite(
+    name = "test",
+)

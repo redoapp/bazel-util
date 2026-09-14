@@ -1,0 +1,23 @@
+load("@rules_python//python:defs.bzl", "py_test")
+
+py_test(
+    name = "test",
+    srcs = ["test_main.py"],
+    legacy_create_init = False,
+    main = "test_main.py",
+    python_version = "3.13",
+    deps = ["//query/run:lib"],
+)
+
+py_test(
+    name = "spec_test",
+    srcs = ["test_spec.py"],
+    legacy_create_init = False,
+    main = "test_spec.py",
+    python_version = "3.13",
+    deps = ["//query/run:lib"],
+)
+
+test_suite(
+    name = "tests",
+)

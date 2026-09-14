@@ -355,6 +355,60 @@ To check for differences (e.g. in CI):
 bazel test :example_diff
 ```
 
+## Query
+
+Some generated files are lists of targets, found by querying the workspace.
+
+`query_bzl` describes a list by the kind and tag of the targets in it, and
+generates a Starlark file holding their labels.
+
+**BUILD.bazel**
+
+```bzl
+load("@bazel_util//query:rules.bzl", "query_bzl")
+
+query_bzl(
+    name = "unit_tests_bzl",
+    out = "unit_tests.bzl",
+    kind = ".*_test",
+    tag = "unit",
+)
+```
+
+```sh
+bazel run :unit_tests_bzl
+```
+
+`kind` is a pattern, as in the query language's `kind()`. `tag` is a whole tag,
+not a substring of one. `exclude` subtracts labels from the result, and each one
+has to match a target the query returns, so a renamed target is an error rather
+than a silent return to the list.
+
+Every Bazel command pays a fixed cost, so a workspace with several of these
+pays it once per list. `query_bzls` generates any number of them from a single
+query, which is worth ~16s of a 13-list refresh.
+
+**BUILD.bazel**
+
+```bzl
+load("@bazel_util//query:rules.bzl", "query_bzls")
+
+query_bzls(
+    name = "query_bzls",
+    deps = [
+        "//tools/test:unit_tests_bzl",
+        "//tools/typescript:libs_bzl",
+    ],
+)
+```
+
+```sh
+bazel run :query_bzls
+```
+
+Both run from the workspace root and write the files in place, leaving a file
+whose content did not change untouched.
+
 ## Format
 
 Formatting is a particular case of the checked-in build products pattern.
