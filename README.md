@@ -409,6 +409,24 @@ bazel run :query_bzls
 Both run from the workspace root and write the files in place, leaving a file
 whose content did not change untouched.
 
+For a list the structured attributes cannot describe — subtracting a package
+pattern, say — `query` takes a raw query and runs it on its own, writing the
+result in the order Bazel printed it.
+
+**BUILD.bazel**
+
+```bzl
+query_bzl(
+    name = "roots",
+    out = "roots.bzl",
+    query = "kind('cjs_root', //...) - //tools/terraform:*",
+)
+```
+
+It cannot be combined with `kind`, `tag` or `exclude`, and `query_bzls` fails on
+a dep that sets it, since a list selected out of a shared result can only be one
+the union covers.
+
 ## Format
 
 Formatting is a particular case of the checked-in build products pattern.

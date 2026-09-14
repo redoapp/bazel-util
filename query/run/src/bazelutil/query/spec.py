@@ -78,6 +78,11 @@ def sort_labels(labels):
     return sorted(labels, key=key)
 
 
+def render_verbatim(lines):
+    """The escape hatch's result, in the order bazel query returned it."""
+    return "TARGETS = [\n" + "".join(['    "%s",\n' % line for line in lines]) + "]\n"
+
+
 def render(labels):
     return (
         "TARGETS = [\n"

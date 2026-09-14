@@ -7,7 +7,14 @@ import sys
 from argparse import ArgumentParser
 from pathlib import Path
 
-from .spec import MissingExclude, parse_targets, render, select, union_query
+from .spec import (
+    MissingExclude,
+    parse_targets,
+    render,
+    render_verbatim,
+    select,
+    union_query,
+)
 
 parser = ArgumentParser()
 parser.add_argument("--manifest", required=True)
@@ -46,18 +53,43 @@ def run_query(specs, workspace):
     return result.stdout.splitlines()
 
 
+def run_raw_query(query, workspace):
+    # The escape hatch runs the query as written, so its result is whatever
+    # bazel query printed, in the order it printed it.
+    result = subprocess.run(
+        ["bazel", "query", query],
+        cwd=workspace,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    if result.returncode:
+        sys.exit(result.returncode)
+    return [line for line in result.stdout.splitlines() if line.strip()]
+
+
 def main(args):
     specs = json.loads(Path(args.manifest).read_text())
     workspace = Path(os.environ.get("BUILD_WORKSPACE_DIRECTORY", os.getcwd()))
 
-    targets = parse_targets(run_query(specs, workspace))
-    try:
-        selected = [(spec["out"], select(spec, targets)) for spec in specs]
-    except MissingExclude as error:
-        sys.exit("error: %s" % error)
+    raw = [spec for spec in specs if spec.get("query")]
+    structured = [spec for spec in specs if not spec.get("query")]
 
-    for out, labels in selected:
-        write_if_changed(workspace / out, render(labels))
+    written = [
+        (spec["out"], render_verbatim(run_raw_query(spec["query"], workspace)))
+        for spec in raw
+    ]
+
+    if structured:
+        targets = parse_targets(run_query(structured, workspace))
+        try:
+            written += [
+                (spec["out"], render(select(spec, targets))) for spec in structured
+            ]
+        except MissingExclude as error:
+            sys.exit("error: %s" % error)
+
+    for out, content in written:
+        write_if_changed(workspace / out, content)
 
 
 if __name__ == "__main__":
