@@ -5,7 +5,7 @@ startup --windows_enable_symlinks
 ## Build
 build -k
 build --guard_against_concurrent_changes
-build --incompatible_auto_exec_groups
+common --incompatible_auto_exec_groups
 build --incompatible_strip_executable_safely
 build --experimental_output_paths strip
 
@@ -27,9 +27,9 @@ build --experimental_fetch_all_coverage_outputs
 build --nogenerate_json_trace_profile
 
 ## Rules
-build --incompatible_check_testonly_for_output_files
-build --incompatible_config_setting_private_default_visibility
-build --incompatible_no_implicit_file_export
+common --incompatible_check_testonly_for_output_files
+common --incompatible_config_setting_private_default_visibility
+common --incompatible_no_implicit_file_export
 common --incompatible_disable_starlark_host_transitions
 common --incompatible_disable_target_default_provider_fields
 common --incompatible_disallow_ctx_resolve_tools
