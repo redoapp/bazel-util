@@ -58,8 +58,23 @@ def _runner(ctx, specs):
     return DefaultInfo(executable = executable, runfiles = runfiles)
 
 def _query_bzl_impl(ctx):
+    if ctx.attr.query:
+        # The escape hatch runs its own query verbatim, so it cannot be batched
+        # and none of the structured attributes apply to it.
+        for attribute in ["exclude", "kind", "tag"]:
+            if getattr(ctx.attr, attribute):
+                fail("query cannot be combined with %s" % attribute)
+        spec = {
+            "exclude": [],
+            "kind": None,
+            "out": _out(ctx),
+            "query": ctx.attr.query,
+            "tag": None,
+        }
+        return [_runner(ctx, [spec]), QueryBzlInfo(**spec)]
+
     if not ctx.attr.kind and not ctx.attr.tag:
-        fail("one of kind or tag is required")
+        fail("one of query, kind or tag is required")
     if ctx.attr.kind:
         _check_kind(ctx.attr.kind)
     if ctx.attr.tag:
@@ -69,6 +84,7 @@ def _query_bzl_impl(ctx):
         "exclude": _exclude(ctx),
         "kind": ctx.attr.kind or None,
         "out": _out(ctx),
+        "query": None,
         "tag": ctx.attr.tag or None,
     }
 
@@ -82,10 +98,13 @@ def _query_bzls_impl(ctx):
         if info.out in labels:
             fail("%s and %s both generate %s" % (labels[info.out], dep.label, info.out))
         labels[info.out] = dep.label
+        if info.query:
+            fail("%s sets query, which runs its own query and cannot be batched" % dep.label)
         specs.append({
             "exclude": info.exclude,
             "kind": info.kind,
             "out": info.out,
+            "query": None,
             "tag": info.tag,
         })
 
@@ -116,6 +135,12 @@ query_bzl = rule(
                 doc = "Rule kind pattern, as in the query language's kind()",
             ),
             "out": attr.string(mandatory = True),
+            # Escape hatch for queries the structured attributes cannot express,
+            # such as subtracting a package pattern. Runs its own bazel query and
+            # writes its result verbatim, so it is not batchable.
+            "query": attr.string(
+                doc = "Raw query, run on its own. Cannot be combined with kind, tag or exclude, and cannot be batched by query_bzls.",
+            ),
             "tag": attr.string(
                 doc = "Tag the target must carry. A \".\" in it matches any character in the query, which only widens what the runner then filters.",
             ),

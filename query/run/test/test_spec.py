@@ -7,6 +7,7 @@ from bazelutil.query.spec import (
     derive_query,
     parse_targets,
     render,
+    render_verbatim,
     select,
     sort_labels,
     tag_pattern,
@@ -201,6 +202,19 @@ class RenderTest(unittest.TestCase):
 
     def test_renders_an_empty_list(self):
         self.assertEqual(render([]), "TARGETS = [\n]\n")
+
+
+class RenderVerbatimTest(unittest.TestCase):
+    def test_keeps_the_order_bazel_printed(self):
+        # The escape hatch exists for queries the structured attributes cannot
+        # express, so its result is not re-sorted the way a selected list is.
+        self.assertEqual(
+            render_verbatim(["//b:b", "//a:a"]),
+            'TARGETS = [\n    "//b:b",\n    "//a:a",\n]\n',
+        )
+
+    def test_renders_an_empty_list(self):
+        self.assertEqual(render_verbatim([]), "TARGETS = [\n]\n")
 
 
 if __name__ == "__main__":
