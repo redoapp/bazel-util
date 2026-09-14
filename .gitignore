@@ -5,3 +5,4 @@
 .yarn
 bazel-*
 user.bazel
+__pycache__

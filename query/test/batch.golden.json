@@ -1,0 +1,1 @@
+[{"exclude":[],"kind":"cjs_root","out":"generated/roots.bzl","tag":null},{"exclude":["//query/test/excluded:excluded","//query/test:one"],"kind":".*_test","out":"query/test/tests.bzl","tag":"example"}]
