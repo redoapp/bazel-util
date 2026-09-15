@@ -21,7 +21,7 @@ def _jsonschema_impl(module_ctx):
 
     facts = module_ctx.facts.get(_FACTS_KEY)
 
-    sha256s = module_ctx.facts.get("sha256s")
+    sha256s = facts.get("sha256s") if facts and facts.get("version") == version else None
     if sha256s == None:
         sha256s = {}
         module_ctx.download(
@@ -41,7 +41,7 @@ def _jsonschema_impl(module_ctx):
         )
 
     return module_ctx.extension_metadata(
-        facts = {_FACTS_KEY: {"sha256s": sha256s}},
+        facts = {_FACTS_KEY: {"sha256s": sha256s, "version": version}},
         reproducible = True,
     )
 

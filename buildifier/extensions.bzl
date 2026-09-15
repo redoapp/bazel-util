@@ -22,7 +22,7 @@ def _buildifier_impl(module_ctx):
     version = version or "8.2.1"
 
     facts = module_ctx.facts.get(_FACTS_KEY)
-    if facts and facts["_version"] != _FACTS_VERSION:
+    if facts and (facts["_version"] != _FACTS_VERSION or facts.get("version") != version):
         facts = None
 
     if facts != None:
@@ -47,7 +47,7 @@ def _buildifier_impl(module_ctx):
         )
 
     return module_ctx.extension_metadata(
-        facts = {_FACTS_KEY: {"sha256s": sha256s, "_version": _FACTS_VERSION}},
+        facts = {_FACTS_KEY: {"sha256s": sha256s, "_version": _FACTS_VERSION, "version": version}},
         reproducible = True,
     )
 
